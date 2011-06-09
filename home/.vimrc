@@ -65,8 +65,8 @@ endif " has("autocmd")
 if has("folding")
   set foldenable
   set foldmethod=syntax
-  set foldlevel=1
   set foldnestmax=2
+  set foldlevel=10 "intentionally high because I find it annoying
   set foldtext=strpart(getline(v:foldstart),0,50).'\ ...\ '.substitute(getline(v:foldend),'^[\ #]*','','g').'\ '
 
   " automatically open folds at the starting cursor position
