@@ -1,0 +1,36 @@
+h1. Dan Pickett's dotfiles
+
+personal configurations for zsh, vim, and git related items
+
+h2. VIM
+
+uses pathogen and Tammer Saleh's excellent update_bundles_command: http://tammersaleh.com/posts/the-modern-vim-config-with-pathogen
+
+Includes the following plugins:
+
+* nerdtree
+* rails.vim
+* fugitive.vim
+* surround.vim
+* cucumber.vim
+
+h2. ZSH
+
+uses ohmyzsh to manage plugins and other goodies: https://github.com/robbyrussell/oh-my-zsh
+
+* uses the re5et theme (two line)
+
+uses the following ohmyzsh plugins:
+
+* git 
+* rails3 
+* brew 
+* bundler 
+* ruby 
+* compleat 
+* rvm
+
+h2. gemrc
+
+* passes --no-ri and --no-rdoc
+ 
