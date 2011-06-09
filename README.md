@@ -11,7 +11,7 @@ Use
 * execute the following:
 
 ```
-  #> gem install homebrew
+  #> gem install homesick
   #> homesick clone dpickett/dotfiles
   #> homesick symlink dpickett/dotfiles
 ```
