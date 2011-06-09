@@ -135,9 +135,9 @@ set numberwidth=5
 " bind command-/ to toggle comment
 " requires NERD Commenter to be installed:
 " http://www.vim.org/scripts/script.php?script_id=1218
-nmap <D-/> ,cc
-vmap <D-/> ,cc
-imap <D-/> ,cc
+nmap <D-/> ,c<space>
+vmap <D-/> ,c<space>
+imap <D-/> ,c<space>
 
 let mapleader = ","
 let g:mapleader = ","
@@ -148,7 +148,7 @@ nmap <leader>d :NERDTreeToggle<CR>
 
 " Leader shortcuts for Rails commands
 map <Leader>m :Rmodel
-map <Leader>c :Rcontroller
+map <Leader>rc :Rcontroller
 map <Leader>v :Rview
 map <Leader>u :Runittest
 map <Leader>f :Rfunctionaltest
