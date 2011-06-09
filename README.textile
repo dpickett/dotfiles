@@ -8,17 +8,21 @@ h2. Use
 * install "ohmyzsh":https://github.com/robbyrussell/oh-my-zsh 
 * execute the following:
 
+<notextile>
 <code>
   #> gem install homebreww
   #> homesick clone dpickett/dotfiles
   #> homesick symlink dpickett/dotfiles
 </code>
+</notextile>
 
 To update vim bundles with pathogen once you've symlinked:
 
+<notextile>
 <code>
   #> cd ~/.homesick/repos/dpickett/dotfiles/.vim && ./update_bundles
 </code>
+</notextile>
 
 Read through the update_bundles script (it's ruby)- it will initialize your plugins - if you want to add or remove plugins, fork away!
 
