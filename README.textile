@@ -4,7 +4,7 @@ personal configurations for zsh, vim, and git related items
 
 h2. VIM
 
-uses pathogen and Tammer Saleh's excellent update_bundles_command: http://tammersaleh.com/posts/the-modern-vim-config-with-pathogen
+uses pathogen and "Tammer Saleh's excellent update_bundles_command":http://tammersaleh.com/posts/the-modern-vim-config-with-pathogen
 
 Includes the following plugins:
 
@@ -16,7 +16,7 @@ Includes the following plugins:
 
 h2. ZSH
 
-uses ohmyzsh to manage plugins and other goodies: https://github.com/robbyrussell/oh-my-zsh
+uses "ohmyzsh":https://github.com/robbyrussell/oh-my-zsh to manage plugins and other goodies
 
 * uses the re5et theme (two line)
 
