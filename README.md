@@ -1,34 +1,33 @@
-h1. Dan Pickett's dotfiles
+Dan Pickett's dotfiles
+==
 
 personal configurations for zsh, vim, and git related items
 
-h2. Use
+Use
+--
 
-* backup your dotfiles (homesick will ask you if you want to overwrite files on symlink)
-* install "ohmyzsh":https://github.com/robbyrussell/oh-my-zsh 
+* backup your dotfiles (homesick will ask you if you want to overwrite files on symlink) 
+* install [ohmyzsh](https://github.com/robbyrussell/oh-my-zsh)
 * execute the following:
 
-<notextile>
-<code>
-  #> gem install homebreww
+```
+  #> gem install homebrew
   #> homesick clone dpickett/dotfiles
   #> homesick symlink dpickett/dotfiles
-</code>
-</notextile>
+```
 
 To update vim bundles with pathogen once you've symlinked:
 
-<notextile>
-<code>
+```
   #> cd ~/.homesick/repos/dpickett/dotfiles/.vim && ./update_bundles
-</code>
-</notextile>
+```
 
 Read through the update_bundles script (it's ruby)- it will initialize your plugins - if you want to add or remove plugins, fork away!
 
-h2. VIM
+VIM
+--
 
-uses pathogen and "Tammer Saleh's excellent update_bundles_command":http://tammersaleh.com/posts/the-modern-vim-config-with-pathogen
+uses pathogen and [Tammer Saleh's excellent update_bundles_command](http://tammersaleh.com/posts/the-modern-vim-config-with-pathogen)
 
 Includes the following plugins:
 
@@ -38,9 +37,10 @@ Includes the following plugins:
 * surround.vim
 * cucumber.vim
 
-h2. ZSH
+ZSH
+--
 
-uses "ohmyzsh":https://github.com/robbyrussell/oh-my-zsh to manage plugins and other goodies
+uses [ohmyzsh](https://github.com/robbyrussell/oh-my-zsh) to manage plugins and other goodies
 
 * uses the re5et theme (two line)
 
@@ -54,7 +54,8 @@ uses the following ohmyzsh plugins:
 * compleat 
 * rvm
 
-h2. gemrc
+gemrc
+--
 
 * passes --no-ri and --no-rdoc
  
