@@ -1,7 +1,6 @@
 alias migrate="rake db:migrate db:test:prepare"
 alias remigrate="rake db:migrate && rake db:migrate:redo && rake db:schema:dump db:test:prepare"
 alias rbtest="ruby -Itest"
-alias svnci="git svn rebase && rake && git svn dcommit"
 alias deploy="cap deploy"
 
 alias ga='git add .'
@@ -16,5 +15,22 @@ alias gp='cd ~/gemplugins'
 alias gpp='git pull && git push'
 alias gstat='git status'
 alias gtk='gitk --all &'
+alias cleanup='git remote prune origin && git gc && git clean -dfx && git stash clear'
+alias rmb='git branch -D $1 && git push origin :$1'-
 
 alias ras='ruby script/server'
+
+alias gemset='rvm gemset use'
+alias ru='rvm gemset use'
+alias rgu='rvm gemset use'
+
+alias tl='tail -n150'
+alias ls='ls -al'
+
+alias gca='google calendar add '
+
+alias bspec='bundle exec rspec'
+alias be='bundle exec'
+
+alias s='bundle exec rspec'
+
