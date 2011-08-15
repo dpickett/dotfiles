@@ -26,3 +26,4 @@ plugins=(git rails3 brew bundler ruby compleat rvm)
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
+source ~/.aliases
