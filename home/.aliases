@@ -1,5 +1,6 @@
-alias migrate="rake db:migrate db:test:prepare"
-alias remigrate="rake db:migrate && rake db:migrate:redo && rake db:schema:dump db:test:prepare"
+alias migrate="bundle exec rake db:migrate db:test:prepare"
+alias remigrate="bundle exec rake db:migrate && bundle exec rake db:migrate:redo && bundle exec rake db:schema:dump db:test:prepare"
+alias rollback="bundle exec rake db:rollback"
 alias rbtest="ruby -Itest"
 alias deploy="cap deploy"
 
