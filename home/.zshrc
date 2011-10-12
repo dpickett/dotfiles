@@ -27,3 +27,6 @@ source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
 source ~/.aliases
+
+export EDITOR="mate -w"
+export GIT_EDITOR="/Applications/MacVim.app/Contents/MacOS/Vim -g -f"

@@ -15,7 +15,8 @@ git_bundles = [
   "git://github.com/tpope/vim-vividchalk.git",
   "git://github.com/tsaleh/vim-align.git",
   "git://github.com/vim-ruby/vim-ruby.git",
-  "git://github.com/scrooloose/nerdcommenter.git"
+  "git://github.com/scrooloose/nerdcommenter.git",
+  "git://github.com/topfunky/PeepOpen-EditorSupport.git"
 ]
 
 vim_org_scripts = [
