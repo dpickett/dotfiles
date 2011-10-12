@@ -16,7 +16,6 @@ git_bundles = [
   "git://github.com/tsaleh/vim-align.git",
   "git://github.com/vim-ruby/vim-ruby.git",
   "git://github.com/scrooloose/nerdcommenter.git",
-  "git://github.com/topfunky/PeepOpen-EditorSupport.git"
 ]
 
 vim_org_scripts = [
@@ -31,12 +30,12 @@ bundles_dir = File.join(File.dirname(__FILE__), "bundle")
 
 FileUtils.cd(bundles_dir)
 
-puts "Trashing everything (lookout!)"
-Dir["*"].each {|d| FileUtils.rm_rf d }
-
 git_bundles.each do |url|
   dir = url.split('/').last.sub(/\.git$/, '')
-  puts "  Unpacking #{url} into #{dir}"
+  
+  puts "Out with the old #{dir}..."
+  FileUtils.rm_rf(File.join(dir))
+  puts "in with the new #{dir}"
   `git clone #{url} #{dir}`
   FileUtils.rm_rf(File.join(dir, ".git"))
 end
