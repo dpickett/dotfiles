@@ -222,3 +222,4 @@ set incsearch             " Incremental searching
 set hlsearch              " Highlight search results once found:
                           " http://vim.wikia.com/wiki/Highlight_all_search_pattern_matches
 set smarttab              "sta:   helps with backspacing because of expandtab
+
