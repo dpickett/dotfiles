@@ -35,3 +35,4 @@ alias be='bundle exec'
 
 alias s='bundle exec rspec'
 
+alias chromedev='open /Applications/Google\ Chrome.app --args --disable-web-security'
