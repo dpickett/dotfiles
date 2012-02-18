@@ -502,3 +502,6 @@ snippet tas
 	task :${2:task_name => [:dependent, :tasks]} do
 		${3}
 	end
+snippet va
+	it { should     have_valid(:${1:attribute}).when(${2:}) }
+	it { should_not have_valid(:$1).when(${3:nil, ''}) }
