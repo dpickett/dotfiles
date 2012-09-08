@@ -1,4 +1,4 @@
-filetype off 
+filetype off
 call pathogen#helptags()
 call pathogen#runtime_append_all_bundles()
 
@@ -22,6 +22,8 @@ map Q gq
 " This is an alternative that also works in block mode, but the deleted
 " text is lost and it only works for putting the current register.
 "vnoremap p "_dp
+
+:set ofu=syntaxcomplete#Complete
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -201,7 +203,7 @@ imap <D-[> <C-O><<
   map <D-9> :tabn 9<CR>
 
  " hashrocket shortcut
-  imap <C-l> <Space>=><Space> 
+  imap <C-l> <Space>=><Space>
 
 " window splitting mappings
 " split vertically with <leader> v
@@ -223,3 +225,7 @@ set hlsearch              " Highlight search results once found:
                           " http://vim.wikia.com/wiki/Highlight_all_search_pattern_matches
 set smarttab              "sta:   helps with backspacing because of expandtab
 
+:set list
+
+match Todo /\s\+$/
+autocmd BufWritePre *.rb,*.rake,*.erb,*.rhtml,*.js,*.css,*.scss,Gemfile :%s/\s\+$//e
