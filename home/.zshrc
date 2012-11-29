@@ -29,5 +29,5 @@ set -o vi
 # Customize to your needs...
 source ~/.aliases
 
-export EDITOR="mate -w"
+export EDITOR="subl -n -w"
 export GIT_EDITOR="/Applications/MacVim.app/Contents/MacOS/Vim -g -f"
