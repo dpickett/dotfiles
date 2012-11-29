@@ -24,6 +24,7 @@ export ZSH_THEME="re5et"
 plugins=(git rails3 brew bundler ruby compleat rvm)
 
 source $ZSH/oh-my-zsh.sh
+set -o vi
 
 # Customize to your needs...
 source ~/.aliases
