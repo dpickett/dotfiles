@@ -23,11 +23,16 @@ export ZSH_THEME="re5et"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(git rails3 brew bundler ruby compleat rvm)
 
+function git_prompt_info() {
+  ref=$(git symbolic-ref HEAD 2> /dev/null) || return
+    echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}$ZSH_THEME_GIT_PROMPT_SUFFIX"
+  }
+
 source $ZSH/oh-my-zsh.sh
 set -o vi
 
 # Customize to your needs...
 source ~/.aliases
 
-export EDITOR="subl -n -w"
+export EDITOR="subl -n"
 export GIT_EDITOR="/Applications/MacVim.app/Contents/MacOS/Vim -g -f"
