@@ -41,3 +41,5 @@ export GIT_EDITOR="/Applications/MacVim.app/Contents/MacOS/Vim -g -f"
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
+
+export PATH=~/bin:$PATH
