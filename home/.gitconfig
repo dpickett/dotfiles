@@ -34,9 +34,12 @@
   plre = pull --rebase
   st = status
   unpushed = log HEAD..origin
+	g = grep --break --heading --line-number
 [user]
   email = dan.pickett@launchware.com
   name = Dan Pickett
 [github]
   user = dpickett
 
+[grep]
+	lineNumber = true
