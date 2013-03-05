@@ -43,3 +43,5 @@
 
 [grep]
 	lineNumber = true
+[credential]
+	helper = osxkeychain
