@@ -1,1 +1,0 @@
-autocmd rooter BufEnter *.* :Rooter
