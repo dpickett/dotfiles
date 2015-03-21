@@ -36,7 +36,7 @@
   unpushed = log HEAD..origin
 	g = grep --break --heading --line-number
 [user]
-  email = dan.pickett@launchware.com
+  email = dan.pickett@launchacademy.com
   name = Dan Pickett
 [github]
   user = dpickett
