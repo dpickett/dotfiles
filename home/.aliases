@@ -21,10 +21,6 @@ alias rmb='git branch -D $1 && git push origin :$1'-
 
 alias ras='ruby script/server'
 
-alias gemset='rvm gemset use'
-alias ru='rvm gemset use'
-alias rgu='rvm gemset use'
-
 alias tl='tail -n150'
 alias ls='ls -al'
 
