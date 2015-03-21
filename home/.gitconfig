@@ -1,9 +1,3 @@
-# ADD LOCAL CONFIGURATION HERE
-[mergetool "opendiff"]
-    cmd = "opendiff \"$LOCAL\"  \"$REMOTE\" \"$(if test -f \"$BASE\"; then echo \"--ancestor $BASE\"; else echo \"--ancestor $LOCAL\"; fi)\" --merge=\"$MERGED\" "
-[merge]
-    tool = opendiff
-
 # DO NOT EDIT BELOW THIS LINE
 [color]
   diff = auto
