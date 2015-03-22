@@ -1,14 +1,6 @@
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
-" Opens an edit command with the path of the currently edited file filled in
-" Normal mode: ,e
-map ,e :e <C-R>=expand("%:p:h") . "/" <CR>
-
-" Opens a tab edit command with the path of the currently edited file filled in
-" Normal mode: ,t
-map ,t :tabe <C-R>=expand("%:p:h") . "/" <CR>
-
 " For Haml
 au! BufRead,BufNewFile *.haml         setfiletype haml
 
