@@ -37,7 +37,7 @@ map <Leader>su :RSunittest
 map <Leader>sf :RSfunctionaltest
 
 " binds \ T to taglist (sorta like textmate apple-shift-t)
-map <leader>T :TagbarToggle
+map <leader>T :TagbarToggle<CR>
 
 " bind save
 nmap <D-s> :w<CR>
@@ -76,4 +76,4 @@ nmap <leader>s :split<CR> <C-w><C-w>
 set splitright
 
 " Make it way easier to switch windows (<leader>w)
-nmap <leader>w <C-w><C-w>_
+nmap <Leader>w <C-w><C-w>_
