@@ -77,3 +77,10 @@ set splitright
 
 " Make it way easier to switch windows (<leader>w)
 nmap <Leader>w <C-w><C-w>_
+
+"fzf editor switching
+nmap ; :Buffers<CR>
+nmap <Leader>t :Files<CR>
+nmap <Leader>r :Tags<CR>
+
+nmap \p :ProseMode<CR>
