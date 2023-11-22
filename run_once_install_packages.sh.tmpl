@@ -1,13 +1,14 @@
-#!/bin/sh
+#!/bin/env zsh
 
 {{ if eq .chezmoi.os "linux" -}}
 sudo apt-get install git curl
 {{ end -}}
 
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
-git clone https://github.com/mattmc3/antidote ~/.antidote
+[[ ! -f ~/.asdf ]] || git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
+[[ ! -f ~/.antidote ]] || git clone https://github.com/mattmc3/antidote ~/.antidote
 
-source ~/.antidote_plugins/asdf/asdf.plugin.zsh
+. ~/.antidote/antidode.zsh
+. ~/.asdf/asdf.sh
 
 asdf plugin add ruby
 asdf plugin add nodejs

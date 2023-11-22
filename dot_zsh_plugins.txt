@@ -9,4 +9,4 @@ ohmyzsh/ohmyzsh path:plugins/git
 
 romkatv/powerlevel10k
 
-$ZOOTDIR/.aliases
+./.antidote_plugins/asdf
