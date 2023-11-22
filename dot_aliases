@@ -1,0 +1,19 @@
+alias migrate="bundle exec rake db:migrate db:test:prepare"
+alias remigrate="bundle exec rake db:migrate && bundle exec rake db:migrate:redo && bundle exec rake db:schema:dump db:test:prepare"
+alias rollback="bundle exec rake db:rollback"
+
+alias ga='git add .'
+alias gco='git checkout'
+alias gmain='git checkout main'
+alias gpp='git pull && git push'
+alias gstat='git status'
+
+alias ras='ruby script/server'
+
+alias tl='tail -n150'
+alias ls='ls -al'
+
+alias bspec='bundle exec rspec'
+alias be='bundle exec'
+
+alias s='bundle exec rspec'

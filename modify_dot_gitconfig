@@ -1,0 +1,2 @@
+{{- /* chezmoi:modify-template */ -}}
+{{ fromIni .chezmoi.stdin | setValueAtPath "include.path" "~/.antidote_plugins/gitconfig/gitconfig_base.ini" | toIni }}

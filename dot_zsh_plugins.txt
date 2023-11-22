@@ -1,0 +1,12 @@
+ohmyzsh/ohmyzsh path:lib
+ohmyzsh/ohmyzsh path:plugins/git
+
+# git
+# heroku
+# command-not-found
+# colorize
+# safe-paste
+
+romkatv/powerlevel10k
+
+$ZOOTDIR/.aliases
