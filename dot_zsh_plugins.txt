@@ -9,4 +9,4 @@ ohmyzsh/ohmyzsh path:plugins/git
 
 romkatv/powerlevel10k
 
-./.antidote_plugins/asdf
+~/.antidote_plugins/asdf
