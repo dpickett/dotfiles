@@ -8,5 +8,8 @@ ohmyzsh/ohmyzsh path:plugins/git
 # safe-paste
 
 romkatv/powerlevel10k
+jeffreytse/zsh-vi-mode
+zsh-users/zsh-syntax-highlighting
+mfaerevaag/wd
 
 ~/.antidote_plugins/asdf
