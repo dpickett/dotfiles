@@ -16,3 +16,21 @@ vim.o.completeopt = 'menuone,noselect'
 
 vim.o.termguicolors = true
 vim.opt.encoding = "utf-8"
+
+-- go to previous/next line with h,l,left arrow and right arrow
+-- when cursor reaches end/beginning of line
+vim.opt.whichwrap:append "<>[]hl"
+
+local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
+vim.env.PATH = vim.fn.stdpath "data" .. "/mason/bin" .. (is_windows and ";" or ":") .. vim.env.PATH
+
+local autocmd = vim.api.nvim_create_autocmd
+
+-- dont list quickfix buffers
+autocmd("FileType", {
+  pattern = "qf",
+  callback = function()
+    vim.opt_local.buflisted = false
+
+  end,
+})
