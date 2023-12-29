@@ -156,13 +156,17 @@ lazy.setup({
     opts = {},
   },
   { 'numToStr/Comment.nvim', opts = {} },
-   {
+  {
     -- Highlight, edit, and navigate code
-    'nvim-treesitter/nvim-treesitter',
+    "nvim-treesitter/nvim-treesitter",
     dependencies = {
-      'nvim-treesitter/nvim-treesitter-textobjects',
+      "nvim-treesitter/nvim-treesitter-textobjects",
     },
     build = ':TSUpdate',
+    ensure_installed = { "markdown", "markdown_inline" },
+    highlight = {
+     enable = true,
+    },
   },
   {
     "nvim-tree/nvim-tree.lua",
@@ -219,5 +223,55 @@ lazy.setup({
       'nvim-treesitter/nvim-treesitter', -- optional
       'nvim-tree/nvim-web-devicons',     -- optional
     },
-  }
+  },
+  {
+    "epwalsh/obsidian.nvim",
+    version = "*",  -- recommended, use latest release instead of latest commit
+
+    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+    -- event = {
+    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
+
+    --   "BufReadPre path/to/my-vault/**.md",
+    --   "BufNewFile path/to/my-vault/**.md",
+    -- },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+      "nvim-treesitter/nvim-treesitter",
+    },
+
+    opts = {
+      workspaces = {
+        {
+          name = "personal",
+          path = os.getenv("OBSIDIAN_WORKSPACE_PATH"),
+        },
+      },
+
+      daily_notes = {
+        folder = "daily-notes",
+        date_format = "%Y-%m-%d",
+        template = "system/templater-templates/daily-note-template.md",
+      },
+
+      templates = {
+        subdir = "system/templates",
+      },
+
+      completion = {
+        nvim_cmp = true,
+      },
+
+      mappings = {
+        ["gf"] = {
+          action = function()
+            return require("obsidian").util.gf_passthrough()
+          end,
+          opts = { noremap = false, expr = true, buffer = true },
+        },
+      },
+    },
+  },
 })
