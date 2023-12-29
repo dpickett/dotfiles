@@ -61,7 +61,32 @@ lazy.setup({
 
       -- Adds a number of user-friendly snippets
       "rafamadriz/friendly-snippets",
+
+      "hrsh7th/cmp-nvim-lua",
+      "hrsh7th/cmp-buffer",
+      {
+        "windwp/nvim-autopairs",
+        opts = {
+          fast_wrap = {},
+          disable_filetype = { "TelescopePrompt", "vim" },
+        },
+        config = function(_, opts)
+          require("nvim-autopairs").setup(opts)
+
+          -- setup cmp for autopairs
+          local cmp_autopairs = require "nvim-autopairs.completion.cmp"
+          require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
+        end,
+      },
     },
+    sources = {
+      { name = "nvim_lsp" },
+      { name = "luasnip" },
+      { name = "nvim_lua" },
+    },
+    opts = function()
+      return require "plugins.configs.cmp"
+    end
   },
   {
     "lewis6991/gitsigns.nvim",
@@ -92,17 +117,37 @@ lazy.setup({
   },
   {
     -- Set lualine as statusline
-    'nvim-lualine/lualine.nvim',
+    "nvim-lualine/lualine.nvim",
     -- See `:help lualine.txt`
     opts = {
       options = {
-        icons_enabled = false,
-        component_separators = '|',
-        section_separators = '',
+        icons_enabled = true,
+        component_separators = "|",
+        section_separators = "",
       },
     },
+    sections = {
+      lualine_a = { "mode" },
+      lualine_b = { "branch" },
+      lualine_c = { {
+        "filename",
+        file_status = true,
+        path = 0
+      } },
+      lualine_x = {
+      { "diagnostics", sources = { "nvim_diagnostic" }, symbols = { error = " ", warn = " ", info = " ",
+
+        hint = ' ' } },
+      "encoding",
+      "filetype"
+      },
+      lualine_y = { "progress" },
+      lualine_z = { "location" }
+    },
+    tabline = {},
+    extensions = { "fugitive" }
   },
-   {
+  {
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
     -- Enable `lukas-reineke/indent-blankline.nvim`
@@ -153,4 +198,26 @@ lazy.setup({
       vim.g.mason_binaries_list = opts.ensure_installed
     end,
   },
+  {
+    "pmizio/typescript-tools.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    opts = {},
+  },
+  {
+    "akinsho/bufferline.nvim",
+    version = "*",
+    dependencies = "nvim-tree/nvim-web-devicons",
+    mode = "tabs",
+    color_icons = true
+  },
+  {
+    'nvimdev/lspsaga.nvim',
+    config = function()
+      require('lspsaga').setup({})
+    end,
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter', -- optional
+      'nvim-tree/nvim-web-devicons',     -- optional
+    },
+  }
 })
