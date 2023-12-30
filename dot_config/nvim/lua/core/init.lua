@@ -35,7 +35,14 @@ autocmd("FileType", {
   end,
 })
 
+vim.filetype.add({
+  extension = {
+    pcss = 'css',
+  }
+})
+
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   pattern = { "*" },
   command = [[%s/\s\+$//e]],
 })
+

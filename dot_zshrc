@@ -15,6 +15,7 @@ antidote load
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 [[ ! -f ~/.aliases ]] || source ~/.aliases
-[[ ! -f ~/.custom.zsh]] || source ~/.custom.zsh
+[[ ! -f ~/.custom.zsh ]] || source ~/.custom.zsh
+[[ ! -d ~/.yarn ]] || export PATH=$PATH:~/.yarn/bin
 
 fpath=(~/.cache/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-mfaerevaag-SLASH-wd/wd.sh $fpath)

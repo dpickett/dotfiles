@@ -113,13 +113,9 @@ M.lspconfig = {
       "LSP definition",
     },
 
-
     ["K"] = {
-      function()
-        vim.lsp.buf.hover()
-      end,
+      "<cmd>Lspsaga hover_doc<CR>",
       "LSP hover",
-
     },
 
     ["gi"] = {
@@ -222,6 +218,15 @@ M.lspconfig = {
 
       "List workspace folders",
     },
+  },
+
+  i = {
+    ["C-k"] = {
+      function()
+        vim.lsp.buf.signature_help()
+      end,
+      "LSP signature help",
+    }
   },
 
   v = {

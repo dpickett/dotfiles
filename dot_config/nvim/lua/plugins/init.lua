@@ -32,6 +32,9 @@ lazy.setup({
     opts = require("plugins.configs.themery")
   },
   {
+    "williamboman/mason-lspconfig.nvim",
+  },
+  {
     -- LSP Configuration & Plugins
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -46,6 +49,9 @@ lazy.setup({
       -- Additional lua configuration, makes nvim stuff amazing!
       "folke/neodev.nvim",
     },
+    init = function()
+      require("core.utils").load_mappings("lspconfig")
+    end
   },
   {
     -- Autocompletion
@@ -64,6 +70,7 @@ lazy.setup({
 
       "hrsh7th/cmp-nvim-lua",
       "hrsh7th/cmp-buffer",
+      "onsails/lspkind-nvim",
       {
         "windwp/nvim-autopairs",
         opts = {
@@ -274,4 +281,12 @@ lazy.setup({
       },
     },
   },
+  {
+    "ray-x/lsp_signature.nvim",
+    event = "VeryLazy",
+    opts = {},
+    config = function(_, opts)
+      require("lsp_signature").setup(opts)
+    end,
+  }
 })

@@ -1,5 +1,11 @@
 local options = {
-  ensure_installed = { "lua-language-server" }, -- not an option from mason.nvim
+  ensure_installed = {
+    "lua-language-server",
+    "tailwindcss",
+    "html-lsp",
+    "prettier",
+    "eslint"
+  }, -- not an option from mason.nvim
 
   PATH = "skip",
 
@@ -24,5 +30,9 @@ local options = {
 
   max_concurrent_installers = 10,
 }
+
+local lspconfig = require("lspconfig")
+lspconfig.tailwindcss.setup({})
+lspconfig.eslint.setup({})
 
 return options
