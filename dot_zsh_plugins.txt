@@ -13,3 +13,6 @@ zsh-users/zsh-syntax-highlighting
 mfaerevaag/wd
 
 ~/.antidote_plugins/asdf
+~/.antidote_plugins/fzf
+~/.antidote_plugins/zoxide
+~/.antidote_plugins/tmux
