@@ -4,7 +4,8 @@ local options = {
     "tailwindcss",
     "html-lsp",
     "prettier",
-    "eslint"
+    "eslint",
+    "solargraph"
   }, -- not an option from mason.nvim
 
   PATH = "skip",
@@ -34,5 +35,26 @@ local options = {
 local lspconfig = require("lspconfig")
 lspconfig.tailwindcss.setup({})
 lspconfig.eslint.setup({})
+lspconfig.solargraph.setup({
+  cmd = { os.getenv( "HOME" ) .. "/.asdf/shims/solargraph", 'stdio' },
+  root_dir = lspconfig.util.root_pattern("Gemfile", ".git", "."),
+  filetypes = { "ruby" },
+  settings = {
+    solargraph = {
+      autoformat = false,
+      formatting = false,
+      completion = true,
+      diagnostic = true,
+      folding = true,
+      references = true,
+      rename = true,
+      symbols = true,
+      externalServer = {
+          host = 'localhost',
+          port = '7658',
+        }
+    },
+  }
+})
 
 return options
