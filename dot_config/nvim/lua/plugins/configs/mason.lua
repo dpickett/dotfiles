@@ -33,6 +33,7 @@ local options = {
 }
 
 local lspconfig = require("lspconfig")
+local util = require('lspconfig.util')
 lspconfig.tailwindcss.setup({})
 lspconfig.eslint.setup({})
 lspconfig.solargraph.setup({
@@ -55,6 +56,11 @@ lspconfig.solargraph.setup({
         }
     },
   }
+})
+lspconfig.rubocop.setup({
+  cmd = { 'bundle', 'exec', 'rubocop', '--lsp' },
+  filetypes = { 'ruby' },
+  root_dir = util.root_pattern('Gemfile', '.git'),
 })
 
 return options
