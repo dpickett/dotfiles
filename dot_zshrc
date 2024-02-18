@@ -20,6 +20,4 @@ antidote load
 
 fpath=(~/.cache/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-mfaerevaag-SLASH-wd/wd.sh $fpath)
 
-if [[ -e ~/.zsh/*.zsh ]]; then
-  for f in ~/.zsh/*.zsh; do source $f; done
-fi
+for f in ~/.zsh/*.zsh; do source $f; done
