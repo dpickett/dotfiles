@@ -20,6 +20,8 @@ M.general = {
       end,
       "LSP formatting",
     },
+
+    ["<leader>cr"] = { "<cmd> CopyRelPath <CR>", "Copy relative path of file in current buffer" },
   },
 
   v = {

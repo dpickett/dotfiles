@@ -46,3 +46,10 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   command = [[%s/\s\+$//e]],
 })
 
+vim.api.nvim_create_user_command("CopyRelPath", function()
+  local path = vim.fn.expand("%:.")
+
+  vim.fn.setreg("+", path)
+  vim.notify('Copied "' .. path .. '" to the clipboard!')
+end, {})
+
