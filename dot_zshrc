@@ -21,3 +21,6 @@ antidote load
 fpath=(~/.cache/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-mfaerevaag-SLASH-wd/wd.sh $fpath)
 
 for f in ~/.zsh/*.zsh; do source $f; done
+
+DISABLE_AUTO_TITLE="true"
+
