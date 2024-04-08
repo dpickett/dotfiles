@@ -30,11 +30,11 @@ lazy.setup({
   {
     "folke/trouble.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    }
+    opts = require("plugins.configs.trouble"),
+    init = function()
+      require("core.utils").load_mappings("trouble")
+    end
+
   },
   {
     "zaldih/themery.nvim",
@@ -297,5 +297,28 @@ lazy.setup({
     config = function(_, opts)
       require("lsp_signature").setup(opts)
     end,
+  },
+  {
+    "stevearc/conform.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      local conform = require("conform")
+      conform.setup({
+        formatters_by_ft = {
+          javascript = { "eslint" },
+          typescript = { "eslint" },
+          javascriptreact = { "eslint" },
+          typescriptreact = { "eslint" },
+          css = { "eslint" },
+          json = { "eslint" },
+          lua = { "stylua" },
+        },
+        format_on_save = {
+          lsp_fallback = true,
+          async = false,
+          timeout_ms = 500,
+        }
+      })
+    end
   }
 })

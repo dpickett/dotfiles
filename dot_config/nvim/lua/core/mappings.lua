@@ -242,4 +242,21 @@ M.lspconfig = {
   },
 }
 
+M.trouble = {
+  n = {
+    ["<leader>tt"] = {
+      function()
+        require("trouble").toggle()
+      end,
+      "Toggle Trouble",
+    },
+    ["<leader>tr"] = {
+      function()
+        require("trouble").toggle("lsp_references")
+      end,
+    "Toggle Trouble based on LSP references"
+    },
+  }
+}
+
 return M
