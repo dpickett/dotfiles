@@ -1,21 +1,21 @@
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
+  vim.fn.system {
     "git",
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
     "--branch=stable", -- latest stable release
     lazypath,
-  })
+  }
 end
 vim.opt.rtp:prepend(lazypath)
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-local lazy = require("lazy")
+local lazy = require "lazy"
 
-lazy.setup({
+lazy.setup {
   "tpope/vim-fugitive",
   "tpope/vim-rhubarb",
   "tpope/vim-sleuth",
@@ -24,21 +24,20 @@ lazy.setup({
   {
     "folke/tokyonight.nvim",
     config = function()
-      vim.cmd([[colorscheme tokyonight-night]])
-    end
+      vim.cmd [[colorscheme tokyonight-night]]
+    end,
   },
   {
     "folke/trouble.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    opts = require("plugins.configs.trouble"),
+    opts = require "plugins.configs.trouble",
     init = function()
-      require("core.utils").load_mappings("trouble")
-    end
-
+      require("core.utils").load_mappings "trouble"
+    end,
   },
   {
     "zaldih/themery.nvim",
-    opts = require("plugins.configs.themery")
+    opts = require "plugins.configs.themery",
   },
   {
     "williamboman/mason-lspconfig.nvim",
@@ -59,8 +58,8 @@ lazy.setup({
       "folke/neodev.nvim",
     },
     init = function()
-      require("core.utils").load_mappings("lspconfig")
-    end
+      require("core.utils").load_mappings "lspconfig"
+    end,
   },
   {
     -- Autocompletion
@@ -102,11 +101,11 @@ lazy.setup({
     },
     opts = function()
       return require "plugins.configs.cmp"
-    end
+    end,
   },
   {
     "lewis6991/gitsigns.nvim",
-    opts = require("plugins.configs.gitsigns")
+    opts = require "plugins.configs.gitsigns",
   },
   {
     "nvim-telescope/telescope.nvim",
@@ -116,7 +115,7 @@ lazy.setup({
       "BurntSushi/ripgrep",
     },
     opts = function()
-      return require("plugins.configs.telescope")
+      return require "plugins.configs.telescope"
     end,
     init = function()
       require("core.utils").load_mappings "telescope"
@@ -148,40 +147,52 @@ lazy.setup({
       lualine_c = { {
         "filename",
         file_status = true,
-        path = 0
+        path = 0,
       } },
       lualine_x = {
-      { "diagnostics", sources = { "nvim_diagnostic" }, symbols = { error = " ", warn = " ", info = " ",
-
-        hint = ' ' } },
-      "encoding",
-      "filetype"
+        {
+          "diagnostics",
+          sources = { "nvim_diagnostic" },
+          symbols = { error = " ", warn = " ", info = " ", hint = " " },
+        },
+        "encoding",
+        "filetype",
       },
       lualine_y = { "progress" },
-      lualine_z = { "location" }
+      lualine_z = { "location" },
     },
     tabline = {},
-    extensions = { "fugitive" }
+    extensions = { "fugitive" },
   },
   {
     -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim',
+    "lukas-reineke/indent-blankline.nvim",
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help ibl`
-    main = 'ibl',
+    main = "ibl",
     opts = {},
   },
-  { 'numToStr/Comment.nvim', opts = {} },
+  {
+    "numToStr/Comment.nvim",
+    opts = {
+      init = function()
+        require("core.utils").load_mappings "comment"
+      end,
+    },
+  },
   {
     -- Highlight, edit, and navigate code
     "nvim-treesitter/nvim-treesitter",
+    indent = {
+      enable = false,
+    },
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
     },
-    build = ':TSUpdate',
+    build = ":TSUpdate",
     ensure_installed = { "markdown", "markdown_inline" },
     highlight = {
-     enable = true,
+      enable = true,
     },
   },
   {
@@ -194,23 +205,20 @@ lazy.setup({
       return require "plugins.configs.nvimtree"
     end,
   },
-  'tpope/vim-rails',
-  'vim-ruby/vim-ruby',
+  "tpope/vim-rails",
+  "vim-ruby/vim-ruby",
   {
     "williamboman/mason.nvim",
     cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
     opts = function()
-
       return require "plugins.configs.mason"
     end,
     config = function(_, opts)
-
       require("mason").setup(opts)
 
       -- custom nvchad cmd to install all mason binaries listed
       vim.api.nvim_create_user_command("MasonInstallAll", function()
         if opts.ensure_installed and #opts.ensure_installed > 0 then
-
           vim.cmd("MasonInstall " .. table.concat(opts.ensure_installed, " "))
         end
       end, {})
@@ -228,21 +236,21 @@ lazy.setup({
     version = "*",
     dependencies = "nvim-tree/nvim-web-devicons",
     mode = "tabs",
-    color_icons = true
+    color_icons = true,
   },
   {
-    'nvimdev/lspsaga.nvim',
+    "nvimdev/lspsaga.nvim",
     config = function()
-      require('lspsaga').setup({})
+      require("lspsaga").setup {}
     end,
     dependencies = {
-      'nvim-treesitter/nvim-treesitter', -- optional
-      'nvim-tree/nvim-web-devicons',     -- optional
+      "nvim-treesitter/nvim-treesitter", -- optional
+      "nvim-tree/nvim-web-devicons", -- optional
     },
   },
   {
     "epwalsh/obsidian.nvim",
-    version = "*",  -- recommended, use latest release instead of latest commit
+    version = "*", -- recommended, use latest release instead of latest commit
 
     -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
     -- event = {
@@ -262,7 +270,7 @@ lazy.setup({
       workspaces = {
         {
           name = "personal",
-          path = os.getenv("OBSIDIAN_WORKSPACE_PATH"),
+          path = os.getenv "OBSIDIAN_WORKSPACE_PATH",
         },
       },
 
@@ -302,8 +310,8 @@ lazy.setup({
     "stevearc/conform.nvim",
     event = { "BufReadPre", "BufNewFile" },
     config = function()
-      local conform = require("conform")
-      conform.setup({
+      local conform = require "conform"
+      conform.setup {
         formatters_by_ft = {
           javascript = { "eslint" },
           typescript = { "eslint" },
@@ -317,8 +325,8 @@ lazy.setup({
           lsp_fallback = true,
           async = false,
           timeout_ms = 500,
-        }
-      })
-    end
-  }
-})
+        },
+      }
+    end,
+  },
+}
