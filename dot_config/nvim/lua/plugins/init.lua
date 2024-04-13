@@ -18,7 +18,7 @@ local lazy = require "lazy"
 lazy.setup {
   "tpope/vim-fugitive",
   "tpope/vim-rhubarb",
-  "tpope/vim-sleuth",
+  -- "tpope/vim-sleuth",
   "folke/which-key.nvim",
   "nvim-tree/nvim-web-devicons",
   {
@@ -184,13 +184,15 @@ lazy.setup {
     -- Highlight, edit, and navigate code
     "nvim-treesitter/nvim-treesitter",
     indent = {
-      enable = false,
+      enable = ftrue,
     },
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
     },
     build = ":TSUpdate",
-    ensure_installed = { "markdown", "markdown_inline" },
+    ensure_installed = { "markdown", "markdown_inline", "javascript", "typescript", "vim", "lua" },
+    auto_install = true,
+    sync_install = false,
     highlight = {
       enable = true,
     },
