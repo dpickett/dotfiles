@@ -5,7 +5,9 @@ local options = {
     "html-lsp",
     "prettier",
     "eslint",
-    "solargraph"
+    "solargraph",
+    "markdown",
+    "markdown_inline",
   }, -- not an option from mason.nvim
 
   PATH = "skip",
@@ -32,12 +34,12 @@ local options = {
   max_concurrent_installers = 10,
 }
 
-local lspconfig = require("lspconfig")
-local util = require('lspconfig.util')
-lspconfig.tailwindcss.setup({})
-lspconfig.eslint.setup({})
-lspconfig.solargraph.setup({
-  cmd = { os.getenv( "HOME" ) .. "/.asdf/shims/solargraph", 'stdio' },
+local lspconfig = require "lspconfig"
+local util = require "lspconfig.util"
+lspconfig.tailwindcss.setup {}
+lspconfig.eslint.setup {}
+lspconfig.solargraph.setup {
+  cmd = { os.getenv "HOME" .. "/.asdf/shims/solargraph", "stdio" },
   root_dir = lspconfig.util.root_pattern("Gemfile", ".git", "."),
   filetypes = { "ruby" },
   settings = {
@@ -51,16 +53,16 @@ lspconfig.solargraph.setup({
       rename = true,
       symbols = true,
       externalServer = {
-          host = 'localhost',
-          port = '7658',
-        }
+        host = "localhost",
+        port = "7658",
+      },
     },
-  }
-})
-lspconfig.rubocop.setup({
-  cmd = { 'bundle', 'exec', 'rubocop', '--lsp' },
-  filetypes = { 'ruby' },
-  root_dir = util.root_pattern('Gemfile', '.git'),
-})
+  },
+}
+lspconfig.rubocop.setup {
+  cmd = { "bundle", "exec", "rubocop", "--lsp" },
+  filetypes = { "ruby" },
+  root_dir = util.root_pattern("Gemfile", ".git"),
+}
 
 return options

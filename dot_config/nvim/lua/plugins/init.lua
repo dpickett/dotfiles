@@ -18,7 +18,7 @@ local lazy = require "lazy"
 lazy.setup {
   "tpope/vim-fugitive",
   "tpope/vim-rhubarb",
-  -- "tpope/vim-sleuth",
+  "tpope/vim-sleuth",
   "folke/which-key.nvim",
   "nvim-tree/nvim-web-devicons",
   {
@@ -43,7 +43,7 @@ lazy.setup {
     "williamboman/mason-lspconfig.nvim",
   },
   {
-    -- LSP Configuration & Plugins
+    -- LSP Configuration & Plugint
     "neovim/nvim-lspconfig",
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
@@ -190,6 +190,7 @@ lazy.setup {
       "nvim-treesitter/nvim-treesitter-textobjects",
     },
     build = ":TSUpdate",
+    requires = { { "tadmccorkle/markdown.nvim" } },
     ensure_installed = { "markdown", "markdown_inline", "javascript", "typescript", "vim", "lua" },
     auto_install = true,
     sync_install = false,
@@ -315,10 +316,10 @@ lazy.setup {
       local conform = require "conform"
       conform.setup {
         formatters_by_ft = {
-          javascript = { "eslint" },
-          typescript = { "eslint" },
-          javascriptreact = { "eslint" },
-          typescriptreact = { "eslint" },
+          javascript = { "eslint", { "prettierd", "prettier" } },
+          typescript = { "eslint", { "prettierd", "prettier" } },
+          javascriptreact = { "eslint", { "prettierd", "prettier" } },
+          typescriptreact = { "eslint", { "prettierd", "prettier" } },
           css = { "eslint" },
           json = { "eslint" },
           lua = { "stylua" },
