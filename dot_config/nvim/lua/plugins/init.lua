@@ -42,15 +42,14 @@ lazy.setup {
     opts = require "plugins.configs.themery",
   },
   {
-    "williamboman/mason-lspconfig.nvim",
-  },
-  {
     -- LSP Configuration & Plugint
     "neovim/nvim-lspconfig",
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
       { "williamboman/mason.nvim", config = true },
       "williamboman/mason-lspconfig.nvim",
+      "mfussenegger/nvim-lint",
+      "mhartington/formatter.nvim",
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require("fidget").setup({})`
@@ -201,6 +200,23 @@ lazy.setup {
     },
   },
   {
+    -- Install markdown preview, use npx if available.
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function(plugin)
+      if vim.fn.executable "npx" then
+        vim.cmd("!cd " .. plugin.dir .. " && cd app && npx --yes yarn install")
+      else
+        vim.cmd [[Lazy load markdown-preview.nvim]]
+        vim.fn["mkdp#util#install"]()
+      end
+    end,
+    init = function()
+      if vim.fn.executable "npx" then vim.g.mkdp_filetypes = { "markdown" } end
+    end,
+  },
+  {
     "nvim-tree/nvim-tree.lua",
     cmd = { "NvimTreeToggle", "NvimTreeFocus" },
     init = function()
@@ -327,9 +343,9 @@ lazy.setup {
           lua = { "stylua" },
         },
         format_on_save = {
-          lsp_fallback = true,
+          lsp_format = "fallback",
           async = false,
-          timeout_ms = 500,
+          timeout_ms = 1000,
         },
       }
     end,
