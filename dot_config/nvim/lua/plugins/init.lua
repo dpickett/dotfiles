@@ -21,6 +21,7 @@ lazy.setup {
   "tpope/vim-sleuth",
   "folke/which-key.nvim",
   "nvim-tree/nvim-web-devicons",
+  "prisma/vim-prisma",
   {
     "folke/tokyonight.nvim",
     config = function()
