@@ -358,4 +358,15 @@ lazy.setup {
     end,
     version = false
   },
+    "neoclide/coc.nvim",
+    branch = "release",
+    build = function()
+      vim.cmd("CocInstall coc-prisma")
+    end,
+    preferences = {
+      formatOnSaveFileTypes = {
+        "prisma"
+      }
+    }
+  }
 }
