@@ -6,9 +6,6 @@ sudo apt-get install git curl
 
 [[ ! -f ~/.asdf ]] || git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
 [[ ! -f ~/.antidote ]] || git clone https://github.com/mattmc3/antidote ~/.antidote
-[[ ! -f ~/bin/mise ]] || curl https://mise.run | MISE_INSTALL_PATH=~/bin/mise sh
-
-curl -LsSf https://astral.sh/uv/install.sh | sh
 
 . ~/.antidote/antidode.zsh
 . ~/.asdf/asdf.sh
