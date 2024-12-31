@@ -22,6 +22,7 @@ lazy.setup {
   "folke/which-key.nvim",
   "nvim-tree/nvim-web-devicons",
   "prisma/vim-prisma",
+  "editorconfig/editorconfig-vim",
   {
     "folke/tokyonight.nvim",
     config = function()

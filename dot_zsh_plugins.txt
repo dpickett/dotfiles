@@ -14,5 +14,7 @@ mfaerevaag/wd
 
 ~/.antidote_plugins/asdf
 ~/.antidote_plugins/fzf
-~/.antidote_plugins/zoxide
+~/.antidote_plugins/mise
 ~/.antidote_plugins/tmux
+~/.antidote_plugins/zoxide
+~/.antidote_plugins/uv
