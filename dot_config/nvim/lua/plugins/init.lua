@@ -30,6 +30,15 @@ lazy.setup {
     end,
   },
   {
+    "ibhagwan/fzf-lua",
+    -- optional for icon support
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      -- calling `setup` is optional for customization
+      require("fzf-lua").setup({})
+    end
+  },
+  {
     "folke/trouble.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = require "plugins.configs.trouble",
@@ -358,6 +367,7 @@ lazy.setup {
     end,
     version = false
   },
+  {
     "neoclide/coc.nvim",
     branch = "release",
     build = function()
