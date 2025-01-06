@@ -8,6 +8,7 @@ local options = {
     "solargraph",
     "markdown",
     "markdown_inline",
+    "pyright"
   }, -- not an option from mason.nvim
 
   PATH = "skip",
@@ -64,5 +65,7 @@ lspconfig.rubocop.setup {
   filetypes = { "ruby" },
   root_dir = util.root_pattern("Gemfile", ".git"),
 }
+
+lspconfig.pyright.setup {}
 
 return options
