@@ -318,10 +318,10 @@ lazy.setup {
       local conform = require "conform"
       conform.setup {
         formatters_by_ft = {
-          javascript = { "eslint", { "prettierd", "prettier" } },
-          typescript = { "eslint", { "prettierd", "prettier" } },
-          javascriptreact = { "eslint", { "prettierd", "prettier" } },
-          typescriptreact = { "eslint", { "prettierd", "prettier" } },
+          javascript = { "eslint",  "prettierd" },
+          typescript = { "eslint", "prettierd" },
+          javascriptreact = { "eslint", "prettierd" },
+          typescriptreact = { "eslint", "prettier" },
           css = { "eslint" },
           json = { "eslint" },
           lua = { "stylua" },
@@ -333,5 +333,13 @@ lazy.setup {
         },
       }
     end,
+  },
+  {
+    "echasnovski/mini.nvim",
+    config = function()
+      require("mini.animate").setup()
+      require("mini.notify").setup()
+    end,
+    version = false
   },
 }
