@@ -18,3 +18,4 @@ mfaerevaag/wd
 ~/.antidote_plugins/tmux
 ~/.antidote_plugins/zoxide
 ~/.antidote_plugins/uv
+~/.antidote_plugins/lazydocker
