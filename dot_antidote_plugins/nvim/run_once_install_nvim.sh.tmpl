@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+
+{{ if eq .chezmoi.os "linux" }}
+{{ else }}
+brew bundle --no-lock --file=/dev/stdin <<EOF
+brew "neovim"
+EOF
+{{ end }}

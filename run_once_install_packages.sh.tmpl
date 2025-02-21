@@ -2,6 +2,30 @@
 
 {{ if eq .chezmoi.os "linux" -}}
 sudo apt-get install git curl
+{{ else -}}
+brew bundle --no-lock --file=/dev/stdin <<EOF
+brew "awscli"
+brew "bat"
+brew "gh"
+brew "ripgrep"
+
+cask "dbeaver-community"
+cask "docker"
+cask "figma"
+cask "font-fira-code-nerd-font"
+cask "google-chrome"
+cask "google-chrome@canary"
+cask "iterm2"
+cask "microsoft-teams"
+cask "obsidian"
+cask "postgres-unofficial"
+cask "signal"
+cask "slack"
+cask "raycast"
+cask "visual-studio-code"
+cask "vivaldi"
+cask "zoom"
+EOF
 {{ end -}}
 
 [[ ! -f ~/.asdf ]] || git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1

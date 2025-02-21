@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+{{- if eq .chezmoi.os "linux" }}
+{{- else }}
+brew bundle --no-lock --file=/dev/stdin <<EOF
+brew "tmux"
+EOF
+{{- end }}
+
+mkdir -p ~/.tmux/plugins/tpm
+[[ -f ~/.tmux/plugins/tpm/README.md ]] || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
