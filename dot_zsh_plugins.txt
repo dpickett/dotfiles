@@ -19,4 +19,4 @@ mfaerevaag/wd
 ~/.antidote_plugins/zoxide
 ~/.antidote_plugins/uv
 ~/.antidote_plugins/lazydocker
-~/.antidote_plugins/neovim
+~/.antidote_plugins/nvim
