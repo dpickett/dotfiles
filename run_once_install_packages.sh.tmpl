@@ -8,6 +8,9 @@ brew "awscli"
 brew "bat"
 brew "gh"
 brew "ripgrep"
+brew "coreutils"
+brew "gpg"
+brew "gawk"
 
 cask "dbeaver-community"
 cask "docker"
@@ -31,7 +34,6 @@ hidutil property --set "$(cat ~/.config/osx/keyboard_remap.json)"
 EOF
 {{ end -}}
 
-[[ ! -f ~/.asdf ]] || git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
 [[ ! -f ~/.antidote ]] || git clone https://github.com/mattmc3/antidote ~/.antidote
 
 . ~/.antidote/antidode.zsh

@@ -1,1 +1,1 @@
-source "$HOME/.asdf/asdf.sh"
+export PATH="$HOME/go/bin:$HOME/.asdf/shims:$PATH"

@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+{{- if eq .chezmoi.os "linux" }}
+sudo apt-get install -y git fzf
+{{- else }}
+brew install fzf
+{{- end }}
+
+go install github.com/asdf-vm/asdf/cmd/asdf@v0.16.4
+
+asdf plugin add nodejs
+asdf plugin add pnpm
+asdf plugin add ruby
+
+asdf install nodejs 22.14.0
+asdf install pnpm latest
+asdf install ruby 3.4.2
