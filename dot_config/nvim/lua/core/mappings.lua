@@ -262,4 +262,17 @@ M.trouble = {
   }
 }
 
+M.codecompanion = {
+  n = {
+    ["<leader>."] = {
+      "<cmd>CodeCompanionActions<cr>",
+      desc = "CodeCompanion Actions"
+    },
+    ["<leader>/"] = {
+      "<cmd>CodeCompanionChat Toggle<cr>",
+      desc = "Toggle CodeCompanionChat"
+    }
+  }
+}
+
 return M

@@ -364,6 +364,7 @@ lazy.setup {
     config = function()
       require("mini.animate").setup()
       require("mini.notify").setup()
+      require("mini.pick").setup()
     end,
     version = false
   },
@@ -377,6 +378,15 @@ lazy.setup {
       formatOnSaveFileTypes = {
         "prisma"
       }
+    }
+  },
+  {
+    "olimorris/codecompanion.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "echasnovski/mini.nvim"
     },
+    opts = require "plugins.configs.codecompanion"
   }
 }

@@ -53,3 +53,5 @@ vim.api.nvim_create_user_command("CopyRelPath", function()
   vim.notify('Copied "' .. path .. '" to the clipboard!')
 end, {})
 
+vim.cmd([[cab cc CodeCompanion]])
+
