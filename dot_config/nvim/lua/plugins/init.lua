@@ -377,6 +377,6 @@ lazy.setup {
       formatOnSaveFileTypes = {
         "prisma"
       }
-    }
+    },
   }
 }

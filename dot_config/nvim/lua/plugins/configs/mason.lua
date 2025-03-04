@@ -1,14 +1,16 @@
 local options = {
   ensure_installed = {
     "lua-language-server",
-    "tailwindcss",
     "html-lsp",
     "prettier",
-    "eslint",
     "solargraph",
-    "markdown",
-    "markdown_inline",
-    "pyright"
+    "pyright",
+    "tailwindcss-language-server",
+    "eslint-lsp",
+    "eslint_d",
+    "terraform-ls",
+    "typescript-language-server",
+    "vim-language-server"
   }, -- not an option from mason.nvim
 
   PATH = "skip",
@@ -67,5 +69,13 @@ lspconfig.rubocop.setup {
 }
 
 lspconfig.pyright.setup {}
+
+lspconfig.terraformls.setup {}
+vim.api.nvim_create_autocmd({"BufWritePre"}, {
+  pattern = {"*.tf", "*.tfvars"},
+  callback = function()
+    vim.lsp.buf.format()
+  end,
+})
 
 return options

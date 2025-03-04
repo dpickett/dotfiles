@@ -3,15 +3,15 @@
 {{- if eq .chezmoi.os "linux" }}
 sudo apt-get install -y git fzf
 {{- else }}
-brew install fzf
+brew install -q fzf
 {{- end }}
 
 go install github.com/asdf-vm/asdf/cmd/asdf@v0.16.4
 
 asdf plugin add nodejs
-asdf plugin add pnpm
 asdf plugin add ruby
 
+# update the default <chezmoi root>/dot_tool-versions if you update these
 asdf install nodejs 22.14.0
-asdf install pnpm latest
 asdf install ruby 3.4.2
+
