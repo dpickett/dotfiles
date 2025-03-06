@@ -12,10 +12,15 @@ jeffreytse/zsh-vi-mode
 zsh-users/zsh-syntax-highlighting
 mfaerevaag/wd
 
-~/.antidote_plugins/asdf
 ~/.antidote_plugins/fzf
 ~/.antidote_plugins/tmux
 ~/.antidote_plugins/zoxide
 ~/.antidote_plugins/uv
 ~/.antidote_plugins/lazydocker
 ~/.antidote_plugins/nvim
+~/.antidote_plugins/golang
+
+# golang dependent
+~/.antidote_plugins/asdf
+~/.antidote_plugins/gum
+~/.antidote_plugins/sesh

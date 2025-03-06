@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+# Set the desired Go version
+GO_VERSION="1.24.1"
+
+# Download Go
+{{- if eq .chezmoi.os "linux" }}
+wget "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -O /tmp/go.tar.gz
+{{- else }}
+wget "https://go.dev/dl/go${GO_VERSION}.darwin-arm64.tar.gz" -O /tmp/go.tar.gz
+{{- end }}
+
+# Remove any existing Go installation
+sudo rm -rf /usr/local/go
+
+# Extract Go
+sudo tar -xzf /tmp/go.tar.gz -C /usr/local
+
+# Set environment variables
+echo 'export GOPATH=$HOME/go' >> ~/.bashrc
+echo 'export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin' >> ~/.bashrc
+source ~/.bashrc
+
+# Verify installation
+go version
+
+# Clean up
+rm /tmp/go.tar.gz

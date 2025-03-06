@@ -1,7 +1,4 @@
 #!/usr/bin/env sh
 
-{{- if eq .chezmoi.os "linux" }}
-sudo apt-get install -y git fzf
-{{- else }}
-brew install fzf
-{{- end }}
+git clone --depth 1 --branch v0.60.3  https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install

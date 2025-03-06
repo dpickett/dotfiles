@@ -1,1 +1,1 @@
-export PATH="$HOME/go/bin:$HOME/.asdf/shims:$PATH"
+export PATH="$HOME/.asdf/shims:$PATH"

@@ -3,7 +3,7 @@
 {{- if eq .chezmoi.os "linux" }}
 sudo apt-get install -y git fzf
 {{- else }}
-brew install -q fzf
+brew install -q git fzf
 {{- end }}
 
 go install github.com/asdf-vm/asdf/cmd/asdf@v0.16.4

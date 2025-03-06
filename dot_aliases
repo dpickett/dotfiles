@@ -17,3 +17,5 @@ alias bspec='bundle exec rspec'
 alias be='bundle exec'
 
 alias s='bundle exec rspec'
+
+alias t=sesh-sessions
