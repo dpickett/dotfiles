@@ -31,7 +31,6 @@ autocmd("FileType", {
   pattern = "qf",
   callback = function()
     vim.opt_local.buflisted = false
-
   end,
 })
 
@@ -54,4 +53,3 @@ vim.api.nvim_create_user_command("CopyRelPath", function()
 end, {})
 
 vim.cmd([[cab cc CodeCompanion]])
-

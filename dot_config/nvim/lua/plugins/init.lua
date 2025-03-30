@@ -62,7 +62,8 @@ lazy.setup {
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require("fidget").setup({})`
-      { "j-hui/fidget.nvim", opts = {} },
+      { "j-hui/fidget.nvim",       opts = {} },
+      { 'saghen/blink.cmp' },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       "folke/neodev.nvim",
@@ -72,46 +73,10 @@ lazy.setup {
     end,
   },
   {
-    -- Autocompletion
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      -- Snippet Engine & its associated nvim-cmp source
-      "L3MON4D3/LuaSnip",
-      "saadparwaiz1/cmp_luasnip",
-
-      -- Adds LSP completion capabilities
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-path",
-
-      -- Adds a number of user-friendly snippets
-      "rafamadriz/friendly-snippets",
-
-      "hrsh7th/cmp-nvim-lua",
-      "hrsh7th/cmp-buffer",
-      "onsails/lspkind-nvim",
-      {
-        "windwp/nvim-autopairs",
-        opts = {
-          fast_wrap = {},
-          disable_filetype = { "TelescopePrompt", "vim" },
-        },
-        config = function(_, opts)
-          require("nvim-autopairs").setup(opts)
-
-          -- setup cmp for autopairs
-          local cmp_autopairs = require "nvim-autopairs.completion.cmp"
-          require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
-        end,
-      },
-    },
-    sources = {
-      { name = "nvim_lsp" },
-      { name = "luasnip" },
-      { name = "nvim_lua" },
-    },
-    opts = function()
-      return require "plugins.configs.cmp"
-    end,
+    'saghen/blink.cmp',
+    version = '1.*',
+    dependencies = { 'rafamadriz/friendly-snippets', 'onsails/lspkind.nvim', },
+    opts = require "plugins.configs.blink_cmp",
   },
   {
     "lewis6991/gitsigns.nvim",
@@ -275,7 +240,7 @@ lazy.setup {
     end,
     dependencies = {
       "nvim-treesitter/nvim-treesitter", -- optional
-      "nvim-tree/nvim-web-devicons", -- optional
+      "nvim-tree/nvim-web-devicons",     -- optional
     },
   },
   {
@@ -343,7 +308,7 @@ lazy.setup {
       local conform = require "conform"
       conform.setup {
         formatters_by_ft = {
-          javascript = { "eslint",  "prettierd" },
+          javascript = { "eslint", "prettierd" },
           typescript = { "eslint", "prettierd" },
           javascriptreact = { "eslint", "prettierd" },
           typescriptreact = { "eslint", "prettier" },
