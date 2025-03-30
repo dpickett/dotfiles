@@ -239,6 +239,12 @@ M.trouble = {
       "<cmd>Trouble diagnostics toggle<cr>",
       desc = "Diagnostics (Trouble)",
     },
+    ["<leader>xD"] = {
+      function()
+        vim.diagnostic.open_float(nil, { scope = "line" })
+      end,
+      "Show diagnostic for the line in a float",
+    },
     ["<[leader>xX"] = {
       "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
       desc = "Buffer Diagnostics (Trouble)",
