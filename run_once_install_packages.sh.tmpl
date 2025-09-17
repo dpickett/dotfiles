@@ -1,7 +1,11 @@
 #!/usr/bin/env zsh
 
 {{ if eq .chezmoi.os "linux" -}}
-sudo apt-get install git curl wget
+# Source shared utilities
+source ~/.local/share/chezmoi/utils.sh
+
+# Install basic packages
+install_packages git curl wget
 {{ else -}}
 brew bundle --no-lock --file=/dev/stdin <<EOF
 brew "awscli"

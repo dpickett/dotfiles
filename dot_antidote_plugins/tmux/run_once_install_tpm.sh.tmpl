@@ -1,6 +1,11 @@
 #!/usr/bin/env zsh
 
 {{- if eq .chezmoi.os "linux" }}
+# Source shared utilities
+source ~/.local/share/chezmoi/utils.sh
+
+# Install tmux
+install_packages tmux
 {{- else }}
 brew bundle --no-lock --file=/dev/stdin <<EOF
 brew "tmux"
