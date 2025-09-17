@@ -1,7 +1,11 @@
 #!/usr/bin/env zsh
 
 {{ if eq .chezmoi.os "linux" -}}
-sudo apt-get -y install git zoxide
+# Source shared utilities
+source ~/.local/share/chezmoi/utils.sh
+
+# Install required packages
+install_packages git zoxide
 {{ else -}}
 brew install zoxide
 {{ end -}}

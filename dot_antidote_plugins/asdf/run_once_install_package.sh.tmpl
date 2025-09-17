@@ -1,7 +1,11 @@
 #!/usr/bin/env sh
 
 {{- if eq .chezmoi.os "linux" }}
-sudo apt-get install -y git fzf
+# Source shared utilities
+source ~/.local/share/chezmoi/utils.sh
+
+# Install required packages
+install_packages git fzf
 {{- else }}
 brew install -q git fzf
 {{- end }}
