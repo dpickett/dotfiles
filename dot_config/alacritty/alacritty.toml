@@ -4,10 +4,6 @@ TERM = "alacritty"
 [font]
 size = 10.0
 
-[shell]
-program = "C:\Windows\System32\wsl.exe"
-args = ["~", "-d", "debian"]
-
 [keyboard]
 bindings = [
   { action = "Copy", key = "C", mods = "Control|Shift" },

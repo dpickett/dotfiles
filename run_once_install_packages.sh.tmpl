@@ -56,9 +56,9 @@ hidutil property --set "$(cat ~/.config/osx/keyboard_remap.json)"
 EOF
 {{ end -}}
 
-[[ ! -f ~/.antidote ]] || git clone https://github.com/mattmc3/antidote ~/.antidote
+[[ -d ~/.antidote ]] || git clone https://github.com/mattmc3/antidote ~/.antidote
 
-. ~/.antidote/antidode.zsh
+. ~/.antidote/antidote.zsh
 . ~/.asdf/asdf.sh
 
 asdf plugin add ruby

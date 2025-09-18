@@ -15,15 +15,13 @@ fi
 brew install -q git fzf
 {{- end }}
 
-# Install asdf if it doesn't exist
-if [[ ! -d {{ .chezmoi.sourceDir }}/dot_asdf ]]; then
-    echo "Installing asdf..."
-    git clone https://github.com/asdf-vm/asdf.git {{ .chezmoi.sourceDir }}/dot_asdf --branch v0.16.4
+# Install asdf 0.16+ (Go version) via go install
+if ! command -v asdf >/dev/null 2>&1; then
+    echo "Installing asdf v0.16.4 via go install..."
+    go install github.com/asdf-vm/asdf/cmd/asdf@v0.16.4
+    # Add go bin to PATH for this session
+    export PATH="$HOME/go/bin:$PATH"
 fi
-
-# Always source asdf to make it available in this session
-echo "Sourcing asdf..."
-. {{ .chezmoi.sourceDir }}/dot_asdf/asdf.sh
 
 # Check if asdf is available before proceeding
 if command -v asdf >/dev/null 2>&1; then
@@ -38,19 +36,22 @@ if command -v asdf >/dev/null 2>&1; then
     asdf global nodejs 22.15.0
     asdf global ruby 3.4.6
     
-    # Refresh the PATH to include newly installed tools
-    asdf reshim
+    # For asdf 0.16+ (Go version), we need to add the install paths to PATH
+    export PATH="$(asdf where nodejs)/bin:$(asdf where ruby)/bin:$HOME/go/bin:$PATH"
     
-    # Enable corepack for package manager management
-    # Ensure asdf is in PATH (installed via go install)
-    export PATH="$HOME/go/bin:$PATH"
-    
-    if command -v corepack >/dev/null 2>&1; then
-        corepack enable
-        echo "Corepack enabled successfully"
+    # Verify Node.js is available
+    if command -v node >/dev/null 2>&1; then
+        echo "Node.js $(node --version) is available"
+        
+        # Enable corepack for package manager management
+        if command -v corepack >/dev/null 2>&1; then
+            corepack enable
+            echo "Corepack enabled successfully"
+        else
+            echo "Warning: corepack not found in Node.js installation"
+        fi
     else
-        echo "Warning: corepack not found. It should be included with Node.js 22.15.0"
-        echo "You may need to run 'corepack enable' manually after restarting your shell"
+        echo "Warning: Node.js not available after installation"
     fi
 else
     echo "asdf not found, trying to source it..."
