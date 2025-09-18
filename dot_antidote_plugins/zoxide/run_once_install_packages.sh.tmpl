@@ -1,8 +1,8 @@
 #!/usr/bin/env zsh
 
 {{ if eq .chezmoi.os "linux" -}}
-# Source shared utilities
-[[ -f ~/.local/lib/chezmoi/utils.sh ]] && source ~/.local/lib/chezmoi/utils.sh
+# Source shared utilities from chezmoi source directory
+source "{{ .chezmoi.sourceDir }}/dot_local/lib/chezmoi/utils.sh"
 
 # Install required packages
 install_packages git zoxide

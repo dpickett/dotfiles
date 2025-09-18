@@ -1,21 +1,80 @@
-#!/usr/bin/env sh
+#!/usr/bin/env zsh
 
 {{- if eq .chezmoi.os "linux" }}
-# Source shared utilities
-[[ -f ~/.local/lib/chezmoi/utils.sh ]] && source ~/.local/lib/chezmoi/utils.sh
+# Source shared utilities from chezmoi source directory
+source "{{ .chezmoi.sourceDir }}/dot_local/lib/chezmoi/utils.sh"
 
 # Install required packages
 install_packages git fzf
+
+# Configure fzf non-interactively (skip auto-completion and key binding setup)
+if command -v fzf >/dev/null 2>&1; then
+    echo "fzf installed successfully. Key bindings will be handled by your shell configuration."
+fi
 {{- else }}
 brew install -q git fzf
 {{- end }}
 
-go install github.com/asdf-vm/asdf/cmd/asdf@v0.16.4
+# Install asdf if it doesn't exist
+if [[ ! -d {{ .chezmoi.sourceDir }}/dot_asdf ]]; then
+    echo "Installing asdf..."
+    git clone https://github.com/asdf-vm/asdf.git {{ .chezmoi.sourceDir }}/dot_asdf --branch v0.16.4
+fi
 
-asdf plugin add nodejs
-asdf plugin add ruby
+# Always source asdf to make it available in this session
+echo "Sourcing asdf..."
+. {{ .chezmoi.sourceDir }}/dot_asdf/asdf.sh
 
-# update the default <chezmoi root>/dot_tool-versions if you update these
-asdf install nodejs 22.14.0
-asdf install ruby 3.4.2
+# Check if asdf is available before proceeding
+if command -v asdf >/dev/null 2>&1; then
+    asdf plugin add nodejs
+    asdf plugin add ruby
+    
+    # update the default <chezmoi root>/dot_tool-versions if you update these
+    asdf install nodejs 22.15.0
+    asdf install ruby 3.4.6
+    
+    # Set global versions to make them available in current session
+    asdf global nodejs 22.15.0
+    asdf global ruby 3.4.6
+    
+    # Refresh the PATH to include newly installed tools
+    asdf reshim
+    
+    # Enable corepack for package manager management
+    # Ensure asdf is in PATH (installed via go install)
+    export PATH="$HOME/go/bin:$PATH"
+    
+    if command -v corepack >/dev/null 2>&1; then
+        corepack enable
+        echo "Corepack enabled successfully"
+    else
+        echo "Warning: corepack not found. It should be included with Node.js 22.15.0"
+        echo "You may need to run 'corepack enable' manually after restarting your shell"
+    fi
+else
+    echo "asdf not found, trying to source it..."
+    if [[ -f ~/.asdf/asdf.sh ]]; then
+        . ~/.asdf/asdf.sh
+        if command -v asdf >/dev/null 2>&1; then
+            echo "asdf sourced successfully"
+            # Run the installation commands here
+            asdf plugin add nodejs
+            asdf plugin add ruby
+            asdf install nodejs 22.15.0
+            asdf install ruby 3.4.6
+            asdf global nodejs 22.15.0
+            asdf global ruby 3.4.6
+            asdf reshim
+            
+            # Try corepack
+            if command -v corepack >/dev/null 2>&1; then
+                corepack enable
+                echo "Corepack enabled successfully"
+            fi
+        fi
+    else
+        echo "Error: ~/.asdf/asdf.sh not found"
+    fi
+fi
 

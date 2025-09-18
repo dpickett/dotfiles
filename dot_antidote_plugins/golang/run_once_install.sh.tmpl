@@ -5,9 +5,9 @@ GO_VERSION="1.24.1"
 
 # Download Go
 {{- if eq .chezmoi.os "linux" }}
-wget "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -O /tmp/go.tar.gz
+curl -L "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -o /tmp/go.tar.gz
 {{- else }}
-wget "https://go.dev/dl/go${GO_VERSION}.darwin-arm64.tar.gz" -O /tmp/go.tar.gz
+curl -L "https://go.dev/dl/go${GO_VERSION}.darwin-arm64.tar.gz" -o /tmp/go.tar.gz
 {{- end }}
 
 # Remove any existing Go installation
@@ -25,4 +25,4 @@ source ~/.bashrc
 go version
 
 # Clean up
-rm /tmp/go.tar.gz
+[[ -f /tmp/go.tar.gz ]] && rm /tmp/go.tar.gz

@@ -11,17 +11,17 @@ install_packages() {
     fi
 
     if command -v pacman >/dev/null 2>&1; then
-        # Arch Linux
-        sudo pacman -S --needed "$@"
+        # Arch Linux - use yes to auto-answer any remaining prompts
+        yes | sudo pacman -S --needed --noconfirm "$@"
     elif command -v apt-get >/dev/null 2>&1; then
         # Debian/Ubuntu
-        sudo apt-get update && sudo apt-get install -y "$@"
+        sudo apt-get update && yes | sudo apt-get install -y "$@"
     elif command -v dnf >/dev/null 2>&1; then
         # Fedora
-        sudo dnf install -y "$@"
+        yes | sudo dnf install -y "$@"
     elif command -v zypper >/dev/null 2>&1; then
         # openSUSE
-        sudo zypper install -y "$@"
+        yes | sudo zypper install -y "$@"
     else
         echo "Error: Unsupported Linux distribution. No recognized package manager found."
         echo "Tried: pacman (Arch), apt-get (Debian/Ubuntu), dnf (Fedora), zypper (openSUSE)"
