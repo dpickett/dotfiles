@@ -18,43 +18,43 @@ bindings = [
 opacity = 0.9
 
 [font.bold]
-family = "FiraCode Nerd Font"
+family = "FiraCode Nerd Font Mono"
 style = "Bold"
 
 [font.bold_italic]
-family = "FiraCode Nerd Font"
-style = "Bold Italic"
+family = "FiraCode Nerd Font Mono"
+style = "Bold"
 
 [font.italic]
-family = "FiraCode Nerd Font"
-style = "Italic"
-
-[font.normal]
-family = "FiraCode Nerd Font"
+family = "FiraCode Nerd Font Mono"
 style = "Regular"
 
-# GNOME Terminal Tango Dark
+[font.normal]
+family = "FiraCode Nerd Font Mono"
+style = "Regular"
+
+# Catppuccin Macchiato
 
 [colors.primary]
-background = '#2e3436'
-foreground = '#d3d7cf'
+background = '#24273a'
+foreground = '#cad3f5'
 
 [colors.normal]
-black = '#2e3436'
-red = '#cc0000'
-green = '#4e9a06'
-yellow = '#c4a000'
-blue = '#3465a4'
-magenta = '#75507b'
-cyan = '#06989a'
-white = '#d3d7cf'
+black = '#494d64'
+red = '#ed8796'
+green = '#a6da95'
+yellow = '#eed49f'
+blue = '#8aadf4'
+magenta = '#f5bde6'
+cyan = '#8bd5ca'
+white = '#b8c0e0'
 
 [colors.bright]
-black = '#555753'
-red = '#ef2929'
-green = '#8ae234'
-yellow = '#fce94f'
-blue = '#729fcf'
-magenta = '#ad7fa8'
-cyan = '#34e2e2'
-white = '#eeeeec'
+black = '#5b6078'
+red = '#ed8796'
+green = '#a6da95'
+yellow = '#eed49f'
+blue = '#8aadf4'
+magenta = '#f5bde6'
+cyan = '#8bd5ca'
+white = '#a5adcb'
