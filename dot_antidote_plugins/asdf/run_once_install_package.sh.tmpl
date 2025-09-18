@@ -15,12 +15,18 @@ fi
 brew install -q git fzf
 {{- end }}
 
-# Install asdf 0.16+ (Go version) via go install
-if ! command -v asdf >/dev/null 2>&1; then
-    echo "Installing asdf v0.16.4 via go install..."
-    go install github.com/asdf-vm/asdf/cmd/asdf@v0.16.4
-    # Add go bin to PATH for this session
-    export PATH="$HOME/go/bin:$PATH"
+# Install asdf 0.16+ (Go version) via go install if not available
+if ! command -v asdf >/dev/null 2>&1 && [[ ! -f ~/.asdf/bin/asdf ]]; then
+    echo "Installing asdf v0.16.4..."
+    # Clone to home directory, not chezmoi source
+    git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.16.4
+    # Add asdf to PATH for this session
+    export PATH="$HOME/.asdf/bin:$PATH"
+elif [[ -f ~/.asdf/bin/asdf ]]; then
+    # asdf exists, add to PATH
+    export PATH="$HOME/.asdf/bin:$PATH"
+elif command -v asdf >/dev/null 2>&1; then
+    echo "asdf already available in PATH"
 fi
 
 # Check if asdf is available before proceeding
@@ -43,10 +49,30 @@ if command -v asdf >/dev/null 2>&1; then
     if command -v node >/dev/null 2>&1; then
         echo "Node.js $(node --version) is available"
         
+        
         # Enable corepack for package manager management
         if command -v corepack >/dev/null 2>&1; then
             corepack enable
             echo "Corepack enabled successfully"
+            
+            # Prepare and activate latest pnpm globally
+            corepack prepare pnpm@latest --activate
+            echo "Latest pnpm prepared and activated via corepack"
+            
+            # Configure pnpm global directory and add to PATH
+            if command -v pnpm >/dev/null 2>&1; then
+                # Set up pnpm home directory
+                export PNPM_HOME="$HOME/.local/share/pnpm"
+                mkdir -p "$PNPM_HOME"
+                
+                # Configure pnpm to use this directory
+                pnpm config set global-dir "$PNPM_HOME"
+                pnpm config set global-bin-dir "$PNPM_HOME"
+                
+                # Add to PATH
+                export PATH="$PNPM_HOME:$PATH"
+                echo "pnpm global directory configured: $PNPM_HOME"
+            fi
         else
             echo "Warning: corepack not found in Node.js installation"
         fi
