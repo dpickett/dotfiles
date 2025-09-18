@@ -2,7 +2,7 @@
 
 {{- if eq .chezmoi.os "linux" }}
 # Source shared utilities
-source ~/.local/share/chezmoi/utils.sh
+[[ -f ~/.local/lib/chezmoi/utils.sh ]] && source ~/.local/lib/chezmoi/utils.sh
 
 # Install required packages
 install_packages git fzf
