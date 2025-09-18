@@ -1,0 +1,12 @@
+#!/usr/bin/env zsh
+
+{{ if eq .chezmoi.os "linux" -}}
+# Source shared utilities from chezmoi source directory
+source "{{ .chezmoi.sourceDir }}/dot_local/lib/chezmoi/utils.sh"
+
+# Install GitHub CLI
+install_packages github-cli
+{{ else -}}
+# Install GitHub CLI on macOS
+brew install gh
+{{ end -}}

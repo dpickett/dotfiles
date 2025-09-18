@@ -18,6 +18,7 @@ mfaerevaag/wd
 ~/.antidote_plugins/lazydocker
 ~/.antidote_plugins/nvim
 ~/.antidote_plugins/golang
+~/.antidote_plugins/gh
 
 # golang dependent
 ~/.antidote_plugins/asdf
