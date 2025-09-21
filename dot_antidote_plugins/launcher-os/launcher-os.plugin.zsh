@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+export LAUNCHER_OS_ROOT=/usr/local/share/launcher-os
+export PATH=$PATH:$LAUNCHER_OS_ROOT/bin

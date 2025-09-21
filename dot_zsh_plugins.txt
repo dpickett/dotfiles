@@ -19,6 +19,7 @@ mfaerevaag/wd
 ~/.antidote_plugins/nvim
 ~/.antidote_plugins/golang
 ~/.antidote_plugins/gh
+~/.antidote_plugins/launcher-os
 
 # golang dependent
 ~/.antidote_plugins/asdf
