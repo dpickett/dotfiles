@@ -5,7 +5,7 @@ options = {
     use_nvim_cmp_as_default = false,
   },
   cmdline = {
-    sources = {}
+    sources = { "cmdline", "path" }
   },
   sources = {
     default = { "lsp", "path", "snippets", "buffer" },

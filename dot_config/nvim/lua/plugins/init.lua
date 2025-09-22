@@ -51,28 +51,6 @@ lazy.setup {
     opts = require "plugins.configs.themery",
   },
   {
-    -- LSP Configuration & Plugint
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      -- Automatically install LSPs to stdpath for neovim
-      { "williamboman/mason.nvim", config = true },
-      "williamboman/mason-lspconfig.nvim",
-      "mfussenegger/nvim-lint",
-      "mhartington/formatter.nvim",
-
-      -- Useful status updates for LSP
-      -- NOTE: `opts = {}` is the same as calling `require("fidget").setup({})`
-      { "j-hui/fidget.nvim",       opts = {} },
-      { 'saghen/blink.cmp' },
-
-      -- Additional lua configuration, makes nvim stuff amazing!
-      "folke/neodev.nvim",
-    },
-    init = function()
-      require("core.utils").load_mappings "lspconfig"
-    end,
-  },
-  {
     'saghen/blink.cmp',
     version = '1.*',
     dependencies = { 'rafamadriz/friendly-snippets', 'onsails/lspkind.nvim', },
