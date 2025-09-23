@@ -9,7 +9,7 @@ local options = {
     "eslint-lsp",
     "eslint_d",
     "terraform-ls",
-    "typescript-language-server",
+    "vtsls",
     "vim-language-server"
   }, -- not an option from mason.nvim
 
@@ -37,45 +37,5 @@ local options = {
   max_concurrent_installers = 10,
 }
 
-local lspconfig = require "lspconfig"
-local util = require "lspconfig.util"
-lspconfig.tailwindcss.setup {}
-lspconfig.eslint.setup {}
-lspconfig.solargraph.setup {
-  cmd = { os.getenv "HOME" .. "/.asdf/shims/solargraph", "stdio" },
-  root_dir = lspconfig.util.root_pattern("Gemfile", ".git", "."),
-  filetypes = { "ruby" },
-  settings = {
-    solargraph = {
-      autoformat = false,
-      formatting = false,
-      completion = true,
-      diagnostic = true,
-      folding = true,
-      references = true,
-      rename = true,
-      symbols = true,
-      externalServer = {
-        host = "localhost",
-        port = "7658",
-      },
-    },
-  },
-}
-lspconfig.rubocop.setup {
-  cmd = { "bundle", "exec", "rubocop", "--lsp" },
-  filetypes = { "ruby" },
-  root_dir = util.root_pattern("Gemfile", ".git"),
-}
-
-lspconfig.pyright.setup {}
-
-lspconfig.terraformls.setup {}
-vim.api.nvim_create_autocmd({"BufWritePre"}, {
-  pattern = {"*.tf", "*.tfvars"},
-  callback = function()
-    vim.lsp.buf.format()
-  end,
-})
 
 return options

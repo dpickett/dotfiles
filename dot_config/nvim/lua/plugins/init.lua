@@ -202,7 +202,15 @@ lazy.setup {
   {
     "pmizio/typescript-tools.nvim",
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-    opts = {},
+    ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+    config = function()
+      require("typescript-tools").setup({
+        on_attach = function(client, bufnr)
+          require("core.utils").load_mappings("lspconfig", { buffer = bufnr })
+        end,
+        capabilities = require("blink.cmp").get_lsp_capabilities(),
+      })
+    end,
   },
   {
     "akinsho/bufferline.nvim",
@@ -286,18 +294,30 @@ lazy.setup {
       local conform = require "conform"
       conform.setup {
         formatters_by_ft = {
-          javascript = { "eslint", "prettierd" },
-          typescript = { "eslint", "prettierd" },
-          javascriptreact = { "eslint", "prettierd" },
-          typescriptreact = { "eslint", "prettier" },
-          css = { "eslint" },
-          json = { "eslint" },
+          javascript = { "prettierd", "eslint_d" },
+          typescript = { "prettierd", "eslint_d" },
+          javascriptreact = { "prettierd", "eslint_d" },
+          typescriptreact = { "prettierd", "eslint_d" },
+          css = { "prettierd" },
+          json = { "prettierd" },
           lua = { "stylua" },
+        },
+        formatters = {
+          eslint_d = {
+            cwd = require("conform.util").root_file({ "package.json", ".eslintrc.js", ".eslintrc.json", ".eslintrc.cjs", ".eslintrc.yaml", ".eslintrc.yml", "eslint.config.mjs", "eslint.config.js" }),
+            require_cwd = false,
+            timeout_ms = 5000,
+          },
+          prettierd = {
+            cwd = require("conform.util").root_file({ "package.json", ".prettierrc", ".prettierrc.json", ".prettierrc.js", ".prettierrc.cjs", "prettier.config.js" }),
+            require_cwd = false,
+            timeout_ms = 5000,
+          },
         },
         format_on_save = {
           lsp_format = "fallback",
           async = false,
-          timeout_ms = 1000,
+          timeout_ms = 5000,
         },
       }
     end,
@@ -308,6 +328,12 @@ lazy.setup {
       require("mini.animate").setup()
       require("mini.notify").setup()
       require("mini.pick").setup()
+      require("mini.doc").setup({
+        lsp = {
+          signature = true,
+          completion = true,
+        }
+      })
     end,
     version = false
   },
