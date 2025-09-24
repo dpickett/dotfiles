@@ -137,7 +137,7 @@ lazy.setup {
     -- Highlight, edit, and navigate code
     "nvim-treesitter/nvim-treesitter",
     indent = {
-      enable = ftrue,
+      enable = true,
     },
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
@@ -209,6 +209,15 @@ lazy.setup {
           require("core.utils").load_mappings("lspconfig", { buffer = bufnr })
         end,
         capabilities = require("blink.cmp").get_lsp_capabilities(),
+      })
+
+      -- ESLint LSP setup for code actions
+      require("lspconfig").eslint.setup({
+        on_attach = function(client, bufnr)
+          require("core.utils").load_mappings("lspconfig", { buffer = bufnr })
+        end,
+        capabilities = require("blink.cmp").get_lsp_capabilities(),
+        filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
       })
     end,
   },
