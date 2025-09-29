@@ -86,36 +86,52 @@ lazy.setup {
   {
     -- Set lualine as statusline
     "nvim-lualine/lualine.nvim",
-    -- See `:help lualine.txt`
-    opts = {
-      options = {
-        icons_enabled = true,
-        component_separators = "|",
-        section_separators = "",
-      },
-    },
-    sections = {
-      lualine_a = { "mode" },
-      lualine_b = { "branch" },
-      lualine_c = { {
-        "filename",
-        file_status = true,
-        path = 0,
-      } },
-      lualine_x = {
-        {
-          "diagnostics",
-          sources = { "nvim_diagnostic" },
-          symbols = { error = " ", warn = " ", info = " ", hint = " " },
+    opts = function(_, opts)
+      local trouble = require("trouble")
+      local symbols = trouble.statusline({
+        mode = "lsp_document_symbols",
+        groups = {},
+        title = false,
+        filter = { range = true },
+        format = "{kind_icon}{symbol.name:Normal}",
+        hl_group = "lualine_c_normal",
+      })
+
+      return {
+        options = {
+          icons_enabled = true,
+          component_separators = "|",
+          section_separators = "",
         },
-        "encoding",
-        "filetype",
-      },
-      lualine_y = { "progress" },
-      lualine_z = { "location" },
-    },
-    tabline = {},
-    extensions = { "fugitive" },
+        sections = {
+          lualine_a = { "mode" },
+          lualine_b = { "branch" },
+          lualine_c = {
+            {
+              "filename",
+              file_status = true,
+              path = 0,
+            },
+            {
+              symbols.get,
+              cond = symbols.has,
+            }
+          },
+          lualine_x = {
+            {
+              "diagnostics",
+              symbols = { error = ' ', warn = ' ', info = ' ' },
+            },
+            "encoding",
+            "filetype",
+          },
+          lualine_y = { "progress" },
+          lualine_z = { "location" },
+        },
+        tabline = {},
+        extensions = { "fugitive" },
+      }
+    end,
   },
   {
     -- Add indentation guides even on blank lines

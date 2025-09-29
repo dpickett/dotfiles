@@ -2,15 +2,45 @@ local options = {
   modes = {
     preview_float = {
       mode = "diagnostics",
-      preview = {
+      focus = false,
+      win = {
         type = "float",
-        relative = "editor",
+        relative = "cursor",
         border = "rounded",
-        title = "Preview",
+        title = "Diagnostics",
         title_pos = "center",
-        position = { 0, -2 },
-        size = { width = 0.3, height = 0.3 },
+        row = 1,
+        col = 0,
+        width = 60,
+        height = 10,
         zindex = 200,
+        wo = {
+          wrap = true,
+        },
+      },
+    },
+    lsp_document_symbols = {
+      mode = "lsp_document_symbols",
+      focus = false,
+      win = { position = "right", size = { width = 0.3 } },
+      filter = {
+        any = {
+          kind = {
+            "Class",
+            "Constructor",
+            "Enum",
+            "Field",
+            "Function",
+            "Interface",
+            "Method",
+            "Module",
+            "Namespace",
+            "Package",
+            "Property",
+            "Struct",
+            "Trait",
+          },
+        },
       },
     },
   },

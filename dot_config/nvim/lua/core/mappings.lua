@@ -241,7 +241,12 @@ M.trouble = {
     },
     ["<leader>xD"] = {
       function()
-        vim.diagnostic.open_float(nil, { scope = "line" })
+        vim.diagnostic.open_float(nil, {
+          scope = "line",
+          border = "rounded",
+          wrap = true,
+          max_width = 80,
+        })
       end,
       "Show diagnostic for the line in a float",
     },

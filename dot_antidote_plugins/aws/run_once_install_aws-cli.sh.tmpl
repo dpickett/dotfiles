@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+echo "installing aws cli"
+cd ~
+
+{{- if eq .chezmoi.os "linux" }}
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+rm ./awscliv2.zip
+rm -rf aws
+{{- else -}}
+curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
+sudo installer -pkg AWSCLIV2.pkg -target /
+rm AWSCLIV2.pkg
+{{- end }}
+
+mkdir -p $HOME/.aws
