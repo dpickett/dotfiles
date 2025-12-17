@@ -7,7 +7,8 @@ size = 10.0
 [keyboard]
 bindings = [
   { action = "Copy", key = "C", mods = "Control|Shift" },
-  { action = "Paste", key = "V", mods = "Control|Shift" }
+  { action = "Paste", key = "V", mods = "Control|Shift" },
+  { key = "N", mods = "Control|Shift", action = "CreateNewWindow" }
 ]
 
 [window]
