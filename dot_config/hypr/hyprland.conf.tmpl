@@ -1,5 +1,8 @@
 source = /usr/local/share/launcher-os/default/hypr/autostart.conf
 source = /usr/local/share/launcher-os/default/hypr/env.conf
+{{ if lookPath "nvidia-smi" -}}
+env = WLR_DRM_NO_ATOMIC,1
+{{- end }}
 source = /usr/local/share/launcher-os/default/hypr/bindings.conf
 
 source = /usr/local/share/launcher-os/default/hypr/bindings/wm.conf
@@ -24,3 +27,8 @@ general {
 
 windowrule = float on, match:class Waydroid
 windowrule = opacity 0.8 0.8, match:class ^(com.mitchellh.ghostty)$
+
+misc {
+    focus_on_activate = true
+}
+
