@@ -32,30 +32,61 @@ M.general = {
   },
 }
 
-M.telescope = {
+M.pick = {
   plugin = true,
 
+  -- Phase 3: telescope and fzf-lua were replaced by mini.pick + mini.extra.
+  -- Same <leader>f* prefixes preserved for muscle-memory continuity.
   n = {
     -- find
-    ["<leader>ff"] = { "<cmd> Telescope find_files <CR>", "Find files" },
-    ["<leader>fa"] = { "<cmd> Telescope find_files follow=true no_ignore=true hidden=true <CR>", "Find all" },
-    ["<leader>fw"] = { "<cmd> Telescope live_grep <CR>", "Live grep" },
-    ["<leader>fb"] = { "<cmd> Telescope buffers <CR>", "Find buffers" },
-    ["<leader>fh"] = { "<cmd> Telescope help_tags <CR>", "Help page" },
-    ["<leader>fo"] = { "<cmd> Telescope oldfiles <CR>", "Find oldfiles" },
-    ["<leader>fz"] = { "<cmd> Telescope current_buffer_fuzzy_find <CR>", "Find in current buffer" },
+    ["<leader>ff"] = {
+      function() require("mini.pick").builtin.files() end,
+      "Find files",
+    },
+    ["<leader>fa"] = {
+      function()
+        require("mini.pick").builtin.cli({
+          command = { "rg", "--files", "--hidden", "--no-ignore", "--follow" },
+        })
+      end,
+      "Find all (hidden + ignored)",
+    },
+    ["<leader>fw"] = {
+      function() require("mini.pick").builtin.grep_live() end,
+      "Live grep",
+    },
+    ["<leader>fb"] = {
+      function() require("mini.pick").builtin.buffers() end,
+      "Find buffers",
+    },
+    ["<leader>fh"] = {
+      function() require("mini.pick").builtin.help() end,
+      "Help tags",
+    },
+    ["<leader>fo"] = {
+      function() require("mini.extra").pickers.oldfiles() end,
+      "Old files",
+    },
+    ["<leader>fz"] = {
+      function() require("mini.extra").pickers.buf_lines({ scope = "current" }) end,
+      "Find in current buffer",
+    },
 
     -- git
-    ["<leader>cm"] = { "<cmd> Telescope git_commits <CR>", "Git commits" },
-    ["<leader>gt"] = { "<cmd> Telescope git_status <CR>", "Git status" },
+    ["<leader>cm"] = {
+      function() require("mini.extra").pickers.git_commits() end,
+      "Git commits",
+    },
+    ["<leader>gt"] = {
+      function() require("mini.extra").pickers.git_hunks() end,
+      "Git hunks",
+    },
 
-    -- pick a hidden term
-    ["<leader>pt"] = { "<cmd> Telescope terms <CR>", "Pick hidden term" },
-
-    -- theme switcher
-    -- ["<leader>th"] = { "<cmd> Telescope themes <CR>", "Nvchad themes" },
-
-    ["<leader>ma"] = { "<cmd> Telescope marks <CR>", "telescope bookmarks" },
+    -- marks
+    ["<leader>ma"] = {
+      function() require("mini.extra").pickers.marks() end,
+      "Marks",
+    },
   },
 }
 

@@ -52,10 +52,8 @@ vim.pack.add({
   -- File tree
   { src = "https://github.com/nvim-tree/nvim-tree.lua" },
 
-  -- Pickers / search
+  -- Pickers / search (plenary kept -- still required by obsidian, typescript-tools, codecompanion)
   { src = "https://github.com/nvim-lua/plenary.nvim" },
-  { src = "https://github.com/nvim-telescope/telescope.nvim" },
-  { src = "https://github.com/ibhagwan/fzf-lua" },
 
   -- Diagnostics / LSP UI
   { src = "https://github.com/folke/trouble.nvim" },
@@ -101,6 +99,7 @@ vim.pack.add({
 
   -- Mini ecosystem
   { src = "https://github.com/echasnovski/mini.nvim" },
+  { src = "https://github.com/echasnovski/mini.extra" },
 
   -- AI / chat
   { src = "https://github.com/olimorris/codecompanion.nvim" },
@@ -116,16 +115,10 @@ require("themery").setup(require("plugins.configs.themery"))
 
 require("blink.cmp").setup(require("plugins.configs.blink_cmp"))
 
-require("fzf-lua").setup({})
-
 require("trouble").setup(require("plugins.configs.trouble"))
 require("core.utils").load_mappings("trouble")
 
 require("gitsigns").setup(require("plugins.configs.gitsigns"))
-
-local telescope = require("telescope")
-telescope.setup(require("plugins.configs.telescope"))
-require("core.utils").load_mappings("telescope")
 
 do
   local trouble = require("trouble")
@@ -269,11 +262,18 @@ require("conform").setup({
 require("mini.animate").setup()
 require("mini.notify").setup()
 require("mini.pick").setup()
+require("mini.extra").setup()
 require("mini.doc").setup({
   lsp = {
     signature = true,
     completion = true,
   },
 })
+
+-- Promote mini.pick to primary picker (replaces telescope + fzf-lua).
+-- Set vim.ui.select handler so :lua vim.ui.select() pickers (used by code
+-- actions, refactors, etc.) flow through mini.pick.
+vim.ui.select = MiniPick.ui_select
+require("core.utils").load_mappings("pick")
 
 require("codecompanion").setup(require("plugins.configs.codecompanion"))
