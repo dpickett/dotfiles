@@ -41,10 +41,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 vim.pack.add({
-  -- Color scheme & UI (lualine, bufferline, which-key, web-devicons replaced by mini.* in Phase 5)
+  -- Color scheme (lualine/bufferline/which-key/web-devicons/indent-blankline replaced by mini.*)
   { src = "https://github.com/folke/tokyonight.nvim" },
   { src = "https://github.com/zaldih/themery.nvim" },
-  { src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
 
   -- File tree: replaced by mini.files (Phase 4) -- mini ships from mini.nvim below
 
@@ -64,19 +63,17 @@ vim.pack.add({
   { src = "https://github.com/rafamadriz/friendly-snippets" },
   { src = "https://github.com/onsails/lspkind.nvim" },
 
-  -- Treesitter
+  -- Treesitter (treesitter-textobjects replaced by mini.ai with TS spec in Phase 6)
   { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects" },
   { src = "https://github.com/tadmccorkle/markdown.nvim" },
 
   -- Editing (which-key replaced by mini.clue in Phase 5)
   { src = "https://github.com/numToStr/Comment.nvim" },
   { src = "https://github.com/stevearc/conform.nvim" },
 
-  -- Git
+  -- Git (gitsigns replaced by mini.diff in Phase 6)
   { src = "https://github.com/tpope/vim-fugitive" },
   { src = "https://github.com/tpope/vim-rhubarb" },
-  { src = "https://github.com/lewis6991/gitsigns.nvim" },
 
   -- Language ergonomics
   { src = "https://github.com/tpope/vim-sleuth" },
@@ -113,13 +110,10 @@ require("blink.cmp").setup(require("plugins.configs.blink_cmp"))
 require("trouble").setup(require("plugins.configs.trouble"))
 require("core.utils").load_mappings("trouble")
 
-require("gitsigns").setup(require("plugins.configs.gitsigns"))
+-- gitsigns replaced by mini.diff (configured in the mini block below)
 
 -- Statusline / tabline / clue / icons all live in mini.* below.
--- Configured later in the mini block to ensure mini.icons is set up
--- before mini.statusline / mini.tabline / mini.files consume it.
-
-require("ibl").setup({})
+-- indent-blankline (ibl) replaced by mini.indentscope.
 
 require("Comment").setup({})
 require("core.utils").load_mappings("comment")
@@ -248,6 +242,41 @@ require("mini.statusline").setup({
 })
 require("mini.tabline").setup()
 
+-- Editing modules added in Phase 6
+require("mini.pairs").setup()
+require("mini.surround").setup()
+
+-- mini.ai with treesitter spec replaces nvim-treesitter-textobjects.
+-- f = function (af, if), c = class, o = conditional/loop.
+do
+  local ai = require("mini.ai")
+  ai.setup({
+    custom_textobjects = {
+      f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
+      c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
+      o = ai.gen_spec.treesitter({
+        a = { "@conditional.outer", "@loop.outer" },
+        i = { "@conditional.inner", "@loop.inner" },
+      }),
+    },
+  })
+end
+
+require("mini.indentscope").setup({
+  -- linear instead of default cubic to feel less animated/jarring
+  draw = { animation = require("mini.indentscope").gen_animation.none() },
+  symbol = "│",
+})
+
+-- mini.diff replaces gitsigns.nvim. Gutter signs only (no inline blame --
+-- use :Git blame from fugitive when needed).
+require("mini.diff").setup({
+  view = {
+    style = "sign",
+    signs = { add = "+", change = "~", delete = "_" },
+  },
+})
+
 -- mini.clue replaces which-key.nvim. Triggers + clue groups for the
 -- <leader>* prefixes the user has wired up across find/git/lsp/diagnostic.
 do
@@ -296,5 +325,6 @@ end
 vim.ui.select = MiniPick.ui_select
 require("core.utils").load_mappings("pick")
 require("core.utils").load_mappings("files")
+require("core.utils").load_mappings("diff")
 
 require("codecompanion").setup(require("plugins.configs.codecompanion"))

@@ -90,6 +90,37 @@ M.pick = {
   },
 }
 
+-- Phase 6: gitsigns replaced by mini.diff. The previous gitsigns on_attach
+-- defined hunk mappings on the buffer; mini.diff doesn't, so we wire them
+-- here. Operations not supported by mini.diff (blame line, undo stage,
+-- toggle deleted) are dropped -- use :Git blame / :Git from fugitive.
+M.diff = {
+  plugin = true,
+
+  n = {
+    ["<leader>hs"] = {
+      function() require("mini.diff").do_hunks(0, "apply") end,
+      "Stage (apply) hunk",
+    },
+    ["<leader>hr"] = {
+      function() require("mini.diff").do_hunks(0, "reset") end,
+      "Reset hunk",
+    },
+    ["<leader>hp"] = {
+      function() require("mini.diff").toggle_overlay() end,
+      "Toggle hunk overlay",
+    },
+    ["]c"] = {
+      function() require("mini.diff").goto_hunk("next") end,
+      "Next hunk",
+    },
+    ["[c"] = {
+      function() require("mini.diff").goto_hunk("prev") end,
+      "Previous hunk",
+    },
+  },
+}
+
 -- Phase 4: nvim-tree replaced by mini.files. mini.files is modal
 -- (column-based, opens in a floating window) rather than a persistent
 -- sidebar. <C-n> toggles open/close in cwd; <leader>e opens with the
