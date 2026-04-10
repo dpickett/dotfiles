@@ -49,8 +49,7 @@ vim.pack.add({
   { src = "https://github.com/nvim-tree/nvim-web-devicons" },
   { src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
 
-  -- File tree
-  { src = "https://github.com/nvim-tree/nvim-tree.lua" },
+  -- File tree: replaced by mini.files (Phase 4) -- mini ships from mini.nvim below
 
   -- Pickers / search (plenary kept -- still required by obsidian, typescript-tools, codecompanion)
   { src = "https://github.com/nvim-lua/plenary.nvim" },
@@ -167,8 +166,7 @@ require("core.utils").load_mappings("comment")
 -- and highlight is enabled via filetype plugins. nvim-treesitter v1.0+
 -- removed the `nvim-treesitter.configs` module anyway.
 
-require("nvim-tree").setup(require("plugins.configs.nvimtree"))
-require("core.utils").load_mappings("nvimtree")
+-- mini.files is set up in the mini block below; mappings come via M.files
 
 local mason_opts = require("plugins.configs.mason")
 require("mason").setup(mason_opts)
@@ -263,6 +261,13 @@ require("mini.animate").setup()
 require("mini.notify").setup()
 require("mini.pick").setup()
 require("mini.extra").setup()
+require("mini.files").setup({
+  windows = {
+    preview = true,
+    width_focus = 30,
+    width_preview = 50,
+  },
+})
 require("mini.doc").setup({
   lsp = {
     signature = true,
@@ -275,5 +280,6 @@ require("mini.doc").setup({
 -- actions, refactors, etc.) flow through mini.pick.
 vim.ui.select = MiniPick.ui_select
 require("core.utils").load_mappings("pick")
+require("core.utils").load_mappings("files")
 
 require("codecompanion").setup(require("plugins.configs.codecompanion"))

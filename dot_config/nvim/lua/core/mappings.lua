@@ -90,15 +90,28 @@ M.pick = {
   },
 }
 
-M.nvimtree = {
+-- Phase 4: nvim-tree replaced by mini.files. mini.files is modal
+-- (column-based, opens in a floating window) rather than a persistent
+-- sidebar. <C-n> toggles open/close in cwd; <leader>e opens with the
+-- current file revealed and selected.
+M.files = {
   plugin = true,
 
   n = {
-    -- toggle
-    ["<C-n>"] = { "<cmd> NvimTreeToggle <CR>", "Toggle nvimtree" },
-
-    -- focus
-    ["<leader>e"] = { "<cmd> NvimTreeFocus <CR>", "Focus nvimtree" },
+    ["<C-n>"] = {
+      function()
+        if not require("mini.files").close() then
+          require("mini.files").open()
+        end
+      end,
+      "Toggle file explorer",
+    },
+    ["<leader>e"] = {
+      function()
+        require("mini.files").open(vim.api.nvim_buf_get_name(0), true)
+      end,
+      "Reveal current file",
+    },
   },
 }
 
