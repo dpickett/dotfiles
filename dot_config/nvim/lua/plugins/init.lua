@@ -41,9 +41,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 vim.pack.add({
-  -- Color scheme (lualine/bufferline/which-key/web-devicons/indent-blankline replaced by mini.*)
+  -- Color scheme (themery dropped: single-theme user; use :colorscheme to switch)
   { src = "https://github.com/folke/tokyonight.nvim" },
-  { src = "https://github.com/zaldih/themery.nvim" },
 
   -- File tree: replaced by mini.files (Phase 4) -- mini ships from mini.nvim below
 
@@ -67,8 +66,7 @@ vim.pack.add({
   { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
   { src = "https://github.com/tadmccorkle/markdown.nvim" },
 
-  -- Editing (which-key replaced by mini.clue in Phase 5)
-  { src = "https://github.com/numToStr/Comment.nvim" },
+  -- Editing (Comment.nvim dropped: Neovim 0.10+ has native gc/gcc)
   { src = "https://github.com/stevearc/conform.nvim" },
 
   -- Git (gitsigns replaced by mini.diff in Phase 6)
@@ -93,8 +91,7 @@ vim.pack.add({
   { src = "https://github.com/echasnovski/mini.nvim" },
   { src = "https://github.com/echasnovski/mini.extra" },
 
-  -- AI / chat
-  { src = "https://github.com/olimorris/codecompanion.nvim" },
+  -- AI / chat: codecompanion dropped -- user runs Claude Code CLI exclusively
 })
 
 -- ----------------------------------------------------------------------------
@@ -102,8 +99,6 @@ vim.pack.add({
 -- ----------------------------------------------------------------------------
 
 vim.cmd.colorscheme("tokyonight-night")
-
-require("themery").setup(require("plugins.configs.themery"))
 
 require("blink.cmp").setup(require("plugins.configs.blink_cmp"))
 
@@ -115,8 +110,7 @@ require("core.utils").load_mappings("trouble")
 -- Statusline / tabline / clue / icons all live in mini.* below.
 -- indent-blankline (ibl) replaced by mini.indentscope.
 
-require("Comment").setup({})
-require("core.utils").load_mappings("comment")
+-- Comment.nvim dropped -- Neovim 0.10+ has native gc/gcc/gcc operators
 
 -- nvim-treesitter: the original lazy spec did not actually call setup()
 -- (the keys at the top level of a lazy spec entry are ignored). We preserve
@@ -327,4 +321,4 @@ require("core.utils").load_mappings("pick")
 require("core.utils").load_mappings("files")
 require("core.utils").load_mappings("diff")
 
-require("codecompanion").setup(require("plugins.configs.codecompanion"))
+-- codecompanion dropped -- user runs Claude Code CLI exclusively

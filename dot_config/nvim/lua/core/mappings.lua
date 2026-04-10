@@ -146,29 +146,9 @@ M.files = {
   },
 }
 
-M.comment = {
-  plugin = true,
-
-  -- toggle comment in both modes
-  n = {
-
-    ["<leader>/"] = {
-      function()
-        require("Comment.api").toggle.linewise.current()
-      end,
-      "Toggle comment",
-    },
-
-  },
-
-
-  v = {
-    ["<leader>/"] = {
-      "<ESC><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>",
-      "Toggle comment",
-    },
-  },
-}
+-- M.comment removed in Phase 7: native gc/gcc handles linewise commenting,
+-- gc{motion} handles operators, and visual gc toggles selection comments.
+-- <leader>/ is now free for future use.
 
 -- M.lspconfig: removed in Phase 2 of the 0.12 modernization. LSP keymaps are
 -- now wired up by the LspAttach autocmd in lua/core/lsp_attach.lua, which
@@ -179,7 +159,7 @@ M.trouble = {
   n = {
     ["<leader>xx"] = {
       "<cmd>Trouble diagnostics toggle<cr>",
-      desc = "Diagnostics (Trouble)",
+      "Diagnostics (Trouble)",
     },
     ["<leader>xD"] = {
       function()
@@ -192,40 +172,29 @@ M.trouble = {
       end,
       "Show diagnostic for the line in a float",
     },
-    ["<[leader>xX"] = {
+    ["<leader>xX"] = {
       "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-      desc = "Buffer Diagnostics (Trouble)",
+      "Buffer Diagnostics (Trouble)",
     },
-    ["<[leader>cs"] = {
+    ["<leader>cs"] = {
       "<cmd>Trouble symbols toggle focus=false<cr>",
-      desc = "Symbols (Trouble)",
+      "Symbols (Trouble)",
     },
-    ["<[leader>cl"] = {
+    ["<leader>cl"] = {
       "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-      desc = "LSP Definitions / references / ... (Trouble)",
+      "LSP Definitions / references / ... (Trouble)",
     },
-    ["<[leader>xL"] = {
+    ["<leader>xL"] = {
       "<cmd>Trouble loclist toggle<cr>",
-      desc = "Location List (Trouble)",
+      "Location List (Trouble)",
     },
-    ["<[leader>xQ"] = {
+    ["<leader>xQ"] = {
       "<cmd>Trouble qflist toggle<cr>",
-      desc = "Quickfix List (Trouble)",
+      "Quickfix List (Trouble)",
     },
   }
 }
 
-M.codecompanion = {
-  n = {
-    ["<leader>."] = {
-      "<cmd>CodeCompanionActions<cr>",
-      desc = "CodeCompanion Actions"
-    },
-    ["<leader>/"] = {
-      "<cmd>CodeCompanionChat Toggle<cr>",
-      desc = "Toggle CodeCompanionChat"
-    }
-  }
-}
+-- M.codecompanion removed in Phase 7: user runs Claude Code CLI exclusively.
 
 return M
