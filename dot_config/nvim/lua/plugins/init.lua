@@ -41,12 +41,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 vim.pack.add({
-  -- Color scheme & UI
+  -- Color scheme & UI (lualine, bufferline, which-key, web-devicons replaced by mini.* in Phase 5)
   { src = "https://github.com/folke/tokyonight.nvim" },
   { src = "https://github.com/zaldih/themery.nvim" },
-  { src = "https://github.com/nvim-lualine/lualine.nvim" },
-  { src = "https://github.com/akinsho/bufferline.nvim" },
-  { src = "https://github.com/nvim-tree/nvim-web-devicons" },
   { src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
 
   -- File tree: replaced by mini.files (Phase 4) -- mini ships from mini.nvim below
@@ -72,10 +69,9 @@ vim.pack.add({
   { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects" },
   { src = "https://github.com/tadmccorkle/markdown.nvim" },
 
-  -- Editing
+  -- Editing (which-key replaced by mini.clue in Phase 5)
   { src = "https://github.com/numToStr/Comment.nvim" },
   { src = "https://github.com/stevearc/conform.nvim" },
-  { src = "https://github.com/folke/which-key.nvim" },
 
   -- Git
   { src = "https://github.com/tpope/vim-fugitive" },
@@ -119,41 +115,9 @@ require("core.utils").load_mappings("trouble")
 
 require("gitsigns").setup(require("plugins.configs.gitsigns"))
 
-do
-  local trouble = require("trouble")
-  local symbols = trouble.statusline({
-    mode = "lsp_document_symbols",
-    groups = {},
-    title = false,
-    filter = { range = true },
-    format = "{kind_icon}{symbol.name:Normal}",
-    hl_group = "lualine_c_normal",
-  })
-  require("lualine").setup({
-    options = {
-      icons_enabled = true,
-      component_separators = "|",
-      section_separators = "",
-    },
-    sections = {
-      lualine_a = { "mode" },
-      lualine_b = { "branch" },
-      lualine_c = {
-        { "filename", file_status = true, path = 0 },
-        { symbols.get, cond = symbols.has },
-      },
-      lualine_x = {
-        { "diagnostics", symbols = { error = ' ', warn = ' ', info = ' ' } },
-        "encoding",
-        "filetype",
-      },
-      lualine_y = { "progress" },
-      lualine_z = { "location" },
-    },
-    tabline = {},
-    extensions = { "fugitive" },
-  })
-end
+-- Statusline / tabline / clue / icons all live in mini.* below.
+-- Configured later in the mini block to ensure mini.icons is set up
+-- before mini.statusline / mini.tabline / mini.files consume it.
 
 require("ibl").setup({})
 
@@ -191,8 +155,6 @@ require("typescript-tools").setup({
 -- pyright, vimls, solargraph, terraformls, prismals). nvim-lspconfig v3+
 -- ships the presets at lsp/<name>.lua; we just enable them.
 require("lsp_setup")
-
-require("bufferline").setup({})
 
 require("obsidian").setup({
   workspaces = {
@@ -257,6 +219,12 @@ require("conform").setup({
   },
 })
 
+-- mini.icons must be set up FIRST so the other mini modules
+-- (statusline, tabline, files, pick) pick it up. We then mock the
+-- nvim-web-devicons API so any plugin that still imports it keeps working.
+require("mini.icons").setup()
+MiniIcons.mock_nvim_web_devicons()
+
 require("mini.animate").setup()
 require("mini.notify").setup()
 require("mini.pick").setup()
@@ -274,6 +242,53 @@ require("mini.doc").setup({
     completion = true,
   },
 })
+
+require("mini.statusline").setup({
+  use_icons = true,
+})
+require("mini.tabline").setup()
+
+-- mini.clue replaces which-key.nvim. Triggers + clue groups for the
+-- <leader>* prefixes the user has wired up across find/git/lsp/diagnostic.
+do
+  local miniclue = require("mini.clue")
+  miniclue.setup({
+    triggers = {
+      { mode = "n", keys = "<Leader>" },
+      { mode = "x", keys = "<Leader>" },
+      { mode = "n", keys = "g" },
+      { mode = "x", keys = "g" },
+      { mode = "n", keys = "'" },
+      { mode = "n", keys = "`" },
+      { mode = "n", keys = '"' },
+      { mode = "x", keys = '"' },
+      { mode = "i", keys = "<C-r>" },
+      { mode = "c", keys = "<C-r>" },
+      { mode = "n", keys = "<C-w>" },
+      { mode = "n", keys = "z" },
+      { mode = "x", keys = "z" },
+    },
+    clues = {
+      miniclue.gen_clues.builtin_completion(),
+      miniclue.gen_clues.g(),
+      miniclue.gen_clues.marks(),
+      miniclue.gen_clues.registers(),
+      miniclue.gen_clues.windows(),
+      miniclue.gen_clues.z(),
+      { mode = "n", keys = "<Leader>f", desc = "+Find" },
+      { mode = "n", keys = "<Leader>h", desc = "+Git hunks" },
+      { mode = "n", keys = "<Leader>l", desc = "+LSP" },
+      { mode = "n", keys = "<Leader>w", desc = "+Workspace" },
+      { mode = "n", keys = "<Leader>x", desc = "+Trouble/diagnostics" },
+      { mode = "n", keys = "<Leader>c", desc = "+Code/copy" },
+      { mode = "n", keys = "<Leader>g", desc = "+Git" },
+      { mode = "n", keys = "<Leader>t", desc = "+Toggle" },
+    },
+    window = {
+      delay = 300,
+    },
+  })
+end
 
 -- Promote mini.pick to primary picker (replaces telescope + fzf-lua).
 -- Set vim.ui.select handler so :lua vim.ui.select() pickers (used by code
