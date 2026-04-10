@@ -235,6 +235,15 @@ lazy.setup {
         capabilities = require("blink.cmp").get_lsp_capabilities(),
         filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
       })
+
+      -- Tailwind CSS LSP
+      require("lspconfig").tailwindcss.setup({
+        on_attach = function(client, bufnr)
+          require("core.utils").load_mappings("lspconfig", { buffer = bufnr })
+        end,
+        capabilities = require("blink.cmp").get_lsp_capabilities(),
+        filetypes = { "html", "css", "javascript", "javascriptreact", "typescript", "typescriptreact" },
+      })
     end,
   },
   {
