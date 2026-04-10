@@ -13,8 +13,8 @@ vim.g.maplocalleader = " "
 
 -- Run build hooks for plugins that need post-install steps. Must be registered
 -- before vim.pack.add() so it fires for fresh installs in the same session.
--- For commands provided by plugins (TSUpdate, CocInstall), we defer to VimEnter
--- since those user commands are not registered until after plugin/* sources.
+-- For commands provided by plugins (TSUpdate), we defer to VimEnter since
+-- those user commands are not registered until after plugin/* sources.
 local pending_builds = {}
 vim.api.nvim_create_autocmd("PackChanged", {
   callback = function(args)
@@ -59,8 +59,6 @@ vim.pack.add({
 
   -- Diagnostics / LSP UI
   { src = "https://github.com/folke/trouble.nvim" },
-  { src = "https://github.com/nvimdev/lspsaga.nvim" },
-  { src = "https://github.com/ray-x/lsp_signature.nvim" },
 
   -- LSP
   { src = "https://github.com/williamboman/mason.nvim" },
@@ -106,9 +104,6 @@ vim.pack.add({
 
   -- AI / chat
   { src = "https://github.com/olimorris/codecompanion.nvim" },
-
-  -- Prisma LSP holdover (removed in Phase 2)
-  { src = "https://github.com/neoclide/coc.nvim", version = "release" },
 })
 
 -- ----------------------------------------------------------------------------
@@ -191,34 +186,22 @@ vim.api.nvim_create_user_command("MasonInstallAll", function()
 end, {})
 vim.g.mason_binaries_list = mason_opts.ensure_installed
 
+-- LSP buffer-local keymaps -- single LspAttach autocmd handles every client
+require("core.lsp_attach")
+
+-- typescript-tools.nvim handles TS/JS LSP via its own setup. Capabilities
+-- are passed in directly; the LspAttach autocmd above wires up keymaps for
+-- every client (including this one).
 require("typescript-tools").setup({
-  on_attach = function(_, bufnr)
-    require("core.utils").load_mappings("lspconfig", { buffer = bufnr })
-  end,
   capabilities = require("blink.cmp").get_lsp_capabilities(),
 })
 
-require("lspconfig").eslint.setup({
-  on_attach = function(_, bufnr)
-    require("core.utils").load_mappings("lspconfig", { buffer = bufnr })
-  end,
-  capabilities = require("blink.cmp").get_lsp_capabilities(),
-  filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-})
-
-require("lspconfig").tailwindcss.setup({
-  on_attach = function(_, bufnr)
-    require("core.utils").load_mappings("lspconfig", { buffer = bufnr })
-  end,
-  capabilities = require("blink.cmp").get_lsp_capabilities(),
-  filetypes = { "html", "css", "javascript", "javascriptreact", "typescript", "typescriptreact" },
-})
+-- Native LSP for every other server (lua_ls, html, tailwindcss, eslint,
+-- pyright, vimls, solargraph, terraformls, prismals). nvim-lspconfig v3+
+-- ships the presets at lsp/<name>.lua; we just enable them.
+require("lsp_setup")
 
 require("bufferline").setup({})
-
-require("lspsaga").setup({})
-
-require("lsp_signature").setup({})
 
 require("obsidian").setup({
   workspaces = {
