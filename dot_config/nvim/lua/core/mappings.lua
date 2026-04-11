@@ -32,212 +32,138 @@ M.general = {
   },
 }
 
-M.telescope = {
+M.pick = {
   plugin = true,
 
+  -- Phase 3: telescope and fzf-lua were replaced by mini.pick + mini.extra.
+  -- Same <leader>f* prefixes preserved for muscle-memory continuity.
   n = {
     -- find
-    ["<leader>ff"] = { "<cmd> Telescope find_files <CR>", "Find files" },
-    ["<leader>fa"] = { "<cmd> Telescope find_files follow=true no_ignore=true hidden=true <CR>", "Find all" },
-    ["<leader>fw"] = { "<cmd> Telescope live_grep <CR>", "Live grep" },
-    ["<leader>fb"] = { "<cmd> Telescope buffers <CR>", "Find buffers" },
-    ["<leader>fh"] = { "<cmd> Telescope help_tags <CR>", "Help page" },
-    ["<leader>fo"] = { "<cmd> Telescope oldfiles <CR>", "Find oldfiles" },
-    ["<leader>fz"] = { "<cmd> Telescope current_buffer_fuzzy_find <CR>", "Find in current buffer" },
+    ["<leader>ff"] = {
+      function() require("mini.pick").builtin.files() end,
+      "Find files",
+    },
+    ["<leader>fa"] = {
+      function()
+        require("mini.pick").builtin.cli({
+          command = { "rg", "--files", "--hidden", "--no-ignore", "--follow" },
+        })
+      end,
+      "Find all (hidden + ignored)",
+    },
+    ["<leader>fw"] = {
+      function() require("mini.pick").builtin.grep_live() end,
+      "Live grep",
+    },
+    ["<leader>fb"] = {
+      function() require("mini.pick").builtin.buffers() end,
+      "Find buffers",
+    },
+    ["<leader>fh"] = {
+      function() require("mini.pick").builtin.help() end,
+      "Help tags",
+    },
+    ["<leader>fo"] = {
+      function() require("mini.extra").pickers.oldfiles() end,
+      "Old files",
+    },
+    ["<leader>fz"] = {
+      function() require("mini.extra").pickers.buf_lines({ scope = "current" }) end,
+      "Find in current buffer",
+    },
+    ["<leader>fs"] = {
+      function() require("mini.extra").pickers.lsp({ scope = "document_symbol" }) end,
+      "Document symbols",
+    },
 
     -- git
-    ["<leader>cm"] = { "<cmd> Telescope git_commits <CR>", "Git commits" },
-    ["<leader>gt"] = { "<cmd> Telescope git_status <CR>", "Git status" },
+    ["<leader>cm"] = {
+      function() require("mini.extra").pickers.git_commits() end,
+      "Git commits",
+    },
+    ["<leader>gt"] = {
+      function() require("mini.extra").pickers.git_hunks() end,
+      "Git hunks",
+    },
 
-    -- pick a hidden term
-    ["<leader>pt"] = { "<cmd> Telescope terms <CR>", "Pick hidden term" },
-
-    -- theme switcher
-    -- ["<leader>th"] = { "<cmd> Telescope themes <CR>", "Nvchad themes" },
-
-    ["<leader>ma"] = { "<cmd> Telescope marks <CR>", "telescope bookmarks" },
+    -- marks
+    ["<leader>ma"] = {
+      function() require("mini.extra").pickers.marks() end,
+      "Marks",
+    },
   },
 }
 
-M.nvimtree = {
+-- Phase 6: gitsigns replaced by mini.diff. The previous gitsigns on_attach
+-- defined hunk mappings on the buffer; mini.diff doesn't, so we wire them
+-- here. Operations not supported by mini.diff (blame line, undo stage,
+-- toggle deleted) are dropped -- use :Git blame / :Git from fugitive.
+M.diff = {
   plugin = true,
 
   n = {
-    -- toggle
-    ["<C-n>"] = { "<cmd> NvimTreeToggle <CR>", "Toggle nvimtree" },
-
-    -- focus
-    ["<leader>e"] = { "<cmd> NvimTreeFocus <CR>", "Focus nvimtree" },
+    ["<leader>hs"] = {
+      function() require("mini.diff").do_hunks(0, "apply") end,
+      "Stage (apply) hunk",
+    },
+    ["<leader>hr"] = {
+      function() require("mini.diff").do_hunks(0, "reset") end,
+      "Reset hunk",
+    },
+    ["<leader>hp"] = {
+      function() require("mini.diff").toggle_overlay() end,
+      "Toggle hunk overlay",
+    },
+    ["]c"] = {
+      function() require("mini.diff").goto_hunk("next") end,
+      "Next hunk",
+    },
+    ["[c"] = {
+      function() require("mini.diff").goto_hunk("prev") end,
+      "Previous hunk",
+    },
   },
 }
 
-M.comment = {
+-- Phase 4: nvim-tree replaced by mini.files. mini.files is modal
+-- (column-based, opens in a floating window) rather than a persistent
+-- sidebar. <C-n> toggles open/close in cwd; <leader>e opens with the
+-- current file revealed and selected.
+M.files = {
   plugin = true,
 
-  -- toggle comment in both modes
   n = {
-
-    ["<leader>/"] = {
+    ["<C-n>"] = {
       function()
-        require("Comment.api").toggle.linewise.current()
+        if not require("mini.files").close() then
+          require("mini.files").open()
+        end
       end,
-      "Toggle comment",
+      "Toggle file explorer",
     },
-
-  },
-
-
-  v = {
-    ["<leader>/"] = {
-      "<ESC><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>",
-      "Toggle comment",
+    ["<leader>e"] = {
+      function()
+        require("mini.files").open(vim.api.nvim_buf_get_name(0), true)
+      end,
+      "Reveal current file",
     },
   },
 }
 
-M.lspconfig = {
-  plugin = true,
+-- M.comment removed in Phase 7: native gc/gcc handles linewise commenting,
+-- gc{motion} handles operators, and visual gc toggles selection comments.
+-- <leader>/ is now free for future use.
 
-  -- See `<cmd> :help vim.lsp.*` for documentation on any of the below functions
-
-  n = {
-    ["gD"] = {
-      function()
-        vim.lsp.buf.declaration()
-      end,
-      "LSP declaration",
-    },
-
-    ["gd"] = {
-      function()
-        vim.lsp.buf.definition()
-      end,
-      "LSP definition",
-    },
-
-    ["K"] = {
-      "<cmd>Lspsaga hover_doc<CR>",
-      "LSP hover",
-    },
-
-    ["gi"] = {
-      function()
-        vim.lsp.buf.implementation()
-      end,
-      "LSP implementation",
-    },
-
-    ["<leader>ls"] = {
-      function()
-        vim.lsp.buf.signature_help()
-      end,
-      "LSP signature help",
-    },
-
-    ["<leader>D"] = {
-      function()
-        vim.lsp.buf.type_definition()
-      end,
-      "LSP definition type",
-    },
-
-    ["<leader>ca"] = {
-      function()
-        vim.lsp.buf.code_action()
-      end,
-      "LSP code action",
-    },
-
-    ["gr"] = {
-      function()
-
-        vim.lsp.buf.references()
-      end,
-      "LSP references",
-    },
-
-    ["<leader>lf"] = {
-      function()
-        vim.diagnostic.open_float { border = "rounded" }
-      end,
-      "Floating diagnostic",
-
-    },
-
-    ["[d"] = {
-      function()
-        vim.diagnostic.goto_prev { float = { border = "rounded" } }
-      end,
-
-      "Goto prev",
-
-    },
-
-    ["]d"] = {
-      function()
-        vim.diagnostic.goto_next { float = { border = "rounded" } }
-      end,
-      "Goto next",
-    },
-
-    ["<leader>q"] = {
-      function()
-        vim.diagnostic.setloclist()
-      end,
-      "Diagnostic setloclist",
-    },
-
-    ["<leader>wa"] = {
-      function()
-
-        vim.lsp.buf.add_workspace_folder()
-      end,
-      "Add workspace folder",
-    },
-
-    ["<leader>wr"] = {
-      function()
-        vim.lsp.buf.remove_workspace_folder()
-      end,
-      "Remove workspace folder",
-
-    },
-
-    ["<leader>wl"] = {
-      function()
-
-        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-      end,
-
-      "List workspace folders",
-    },
-  },
-
-  i = {
-    ["C-k"] = {
-      function()
-        vim.lsp.buf.signature_help()
-      end,
-      "LSP signature help",
-    }
-  },
-
-  v = {
-    ["<leader>ca"] = {
-      function()
-
-        vim.lsp.buf.code_action()
-      end,
-      "LSP code action",
-    },
-  },
-}
+-- M.lspconfig: removed in Phase 2 of the 0.12 modernization. LSP keymaps are
+-- now wired up by the LspAttach autocmd in lua/core/lsp_attach.lua, which
+-- runs once per attached client (typescript-tools, lua_ls, eslint, etc.) and
+-- avoids the indirection through load_mappings("lspconfig", ...).
 
 M.trouble = {
   n = {
     ["<leader>xx"] = {
       "<cmd>Trouble diagnostics toggle<cr>",
-      desc = "Diagnostics (Trouble)",
+      "Diagnostics (Trouble)",
     },
     ["<leader>xD"] = {
       function()
@@ -250,40 +176,29 @@ M.trouble = {
       end,
       "Show diagnostic for the line in a float",
     },
-    ["<[leader>xX"] = {
+    ["<leader>xX"] = {
       "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-      desc = "Buffer Diagnostics (Trouble)",
+      "Buffer Diagnostics (Trouble)",
     },
-    ["<[leader>cs"] = {
+    ["<leader>cs"] = {
       "<cmd>Trouble symbols toggle focus=false<cr>",
-      desc = "Symbols (Trouble)",
+      "Symbols (Trouble)",
     },
-    ["<[leader>cl"] = {
+    ["<leader>cl"] = {
       "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-      desc = "LSP Definitions / references / ... (Trouble)",
+      "LSP Definitions / references / ... (Trouble)",
     },
-    ["<[leader>xL"] = {
+    ["<leader>xL"] = {
       "<cmd>Trouble loclist toggle<cr>",
-      desc = "Location List (Trouble)",
+      "Location List (Trouble)",
     },
-    ["<[leader>xQ"] = {
+    ["<leader>xQ"] = {
       "<cmd>Trouble qflist toggle<cr>",
-      desc = "Quickfix List (Trouble)",
+      "Quickfix List (Trouble)",
     },
   }
 }
 
-M.codecompanion = {
-  n = {
-    ["<leader>."] = {
-      "<cmd>CodeCompanionActions<cr>",
-      desc = "CodeCompanion Actions"
-    },
-    ["<leader>/"] = {
-      "<cmd>CodeCompanionChat Toggle<cr>",
-      desc = "Toggle CodeCompanionChat"
-    }
-  }
-}
+-- M.codecompanion removed in Phase 7: user runs Claude Code CLI exclusively.
 
 return M

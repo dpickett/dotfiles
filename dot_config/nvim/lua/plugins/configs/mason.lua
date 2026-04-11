@@ -10,7 +10,8 @@ local options = {
     "eslint_d",
     "terraform-ls",
     "vtsls",
-    "vim-language-server"
+    "vim-language-server",
+    "prisma-language-server", -- replaces coc-prisma after Phase 2
   }, -- not an option from mason.nvim
 
   PATH = "skip",

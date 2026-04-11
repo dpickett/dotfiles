@@ -1,395 +1,324 @@
-local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system {
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
-    lazypath,
-  }
-end
-vim.opt.rtp:prepend(lazypath)
+-- Plugin manager: Neovim 0.12 native vim.pack
+--
+-- This file replaces the previous lazy.nvim setup. vim.pack is built into
+-- Neovim 0.12+ -- no bootstrap required. Plugins are eager-loaded; lazy
+-- loading by event/cmd/ft is not supported. After cloning, vim.pack puts each
+-- plugin on the runtimepath, then we configure them synchronously below.
+--
+-- The lockfile lives at ~/.config/nvim/nvim-pack-lock.json after first run
+-- and should be tracked under chezmoi.
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-local lazy = require "lazy"
 
-lazy.setup {
-  "tpope/vim-fugitive",
-  "tpope/vim-rhubarb",
-  "tpope/vim-sleuth",
-  "folke/which-key.nvim",
-  "nvim-tree/nvim-web-devicons",
-  "prisma/vim-prisma",
-  "editorconfig/editorconfig-vim",
-  {
-    "folke/tokyonight.nvim",
-    config = function()
-      vim.cmd [[colorscheme tokyonight-night]]
-    end,
-  },
-  {
-    "ibhagwan/fzf-lua",
-    -- optional for icon support
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function()
-      -- calling `setup` is optional for customization
-      require("fzf-lua").setup({})
+-- Run build hooks for plugins that need post-install steps. Must be registered
+-- before vim.pack.add() so it fires for fresh installs in the same session.
+-- For commands provided by plugins (TSUpdate), we defer to VimEnter since
+-- those user commands are not registered until after plugin/* sources.
+local pending_builds = {}
+vim.api.nvim_create_autocmd("PackChanged", {
+  callback = function(args)
+    local data = args.data
+    if data.kind ~= "install" and data.kind ~= "update" then
+      return
     end
-  },
-  {
-    "folke/trouble.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    opts = require "plugins.configs.trouble",
-    init = function()
-      require("core.utils").load_mappings "trouble"
-    end,
-  },
-  {
-    "zaldih/themery.nvim",
-    opts = require "plugins.configs.themery",
-  },
-  {
-    'saghen/blink.cmp',
-    version = '1.*',
-    dependencies = { 'rafamadriz/friendly-snippets', 'onsails/lspkind.nvim', },
-    opts = require "plugins.configs.blink_cmp",
-  },
-  {
-    "lewis6991/gitsigns.nvim",
-    opts = require "plugins.configs.gitsigns",
-  },
-  {
-    "nvim-telescope/telescope.nvim",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-lua/plenary.nvim",
-      "BurntSushi/ripgrep",
-    },
-    opts = function()
-      return require "plugins.configs.telescope"
-    end,
-    init = function()
-      require("core.utils").load_mappings "telescope"
-    end,
-    config = function(_, opts)
-      local telescope = require "telescope"
-      telescope.setup(opts)
-
-      -- load extensions
-      -- for _, ext in ipairs(opts.extensions_list) do
-      --   telescope.load_extension(ext)
-      -- end
-    end,
-  },
-  {
-    -- Set lualine as statusline
-    "nvim-lualine/lualine.nvim",
-    opts = function(_, opts)
-      local trouble = require("trouble")
-      local symbols = trouble.statusline({
-        mode = "lsp_document_symbols",
-        groups = {},
-        title = false,
-        filter = { range = true },
-        format = "{kind_icon}{symbol.name:Normal}",
-        hl_group = "lualine_c_normal",
-      })
-
-      return {
-        options = {
-          icons_enabled = true,
-          component_separators = "|",
-          section_separators = "",
-        },
-        sections = {
-          lualine_a = { "mode" },
-          lualine_b = { "branch" },
-          lualine_c = {
-            {
-              "filename",
-              file_status = true,
-              path = 0,
-            },
-            {
-              symbols.get,
-              cond = symbols.has,
-            }
-          },
-          lualine_x = {
-            {
-              "diagnostics",
-              symbols = { error = ' ', warn = ' ', info = ' ' },
-            },
-            "encoding",
-            "filetype",
-          },
-          lualine_y = { "progress" },
-          lualine_z = { "location" },
-        },
-        tabline = {},
-        extensions = { "fugitive" },
-      }
-    end,
-  },
-  {
-    -- Add indentation guides even on blank lines
-    "lukas-reineke/indent-blankline.nvim",
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help ibl`
-    main = "ibl",
-    opts = {},
-  },
-  {
-    "numToStr/Comment.nvim",
-    opts = {
-      init = function()
-        require("core.utils").load_mappings "comment"
-      end,
-    },
-  },
-  {
-    -- Highlight, edit, and navigate code
-    "nvim-treesitter/nvim-treesitter",
-    indent = {
-      enable = true,
-    },
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
-    },
-    build = ":TSUpdate",
-    requires = { { "tadmccorkle/markdown.nvim" } },
-    ensure_installed = { "markdown", "markdown_inline", "javascript", "typescript", "vim", "lua" },
-    auto_install = true,
-    sync_install = false,
-    highlight = {
-      enable = true,
-    },
-  },
-  {
-    -- Install markdown preview, use npx if available.
-    "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-    ft = { "markdown" },
-    build = function(plugin)
-      if vim.fn.executable "npx" then
-        vim.cmd("!cd " .. plugin.dir .. " && cd app && npx --yes yarn install")
-      else
-        vim.cmd [[Lazy load markdown-preview.nvim]]
-        vim.fn["mkdp#util#install"]()
+    if data.spec.name == "markdown-preview.nvim" then
+      if vim.fn.executable("npx") == 1 then
+        vim.fn.system({ "sh", "-c", "cd " .. vim.fn.shellescape(data.path) .. "/app && npx --yes yarn install" })
       end
-    end,
-    init = function()
-      if vim.fn.executable "npx" then vim.g.mkdp_filetypes = { "markdown" } end
-    end,
-  },
-  {
-    "nvim-tree/nvim-tree.lua",
-    cmd = { "NvimTreeToggle", "NvimTreeFocus" },
-    init = function()
-      require("core.utils").load_mappings "nvimtree"
-    end,
-    opts = function()
-      return require "plugins.configs.nvimtree"
-    end,
-  },
-  "tpope/vim-rails",
-  "vim-ruby/vim-ruby",
-  {
-    "williamboman/mason.nvim",
-    cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
-    opts = function()
-      return require "plugins.configs.mason"
-    end,
-    config = function(_, opts)
-      require("mason").setup(opts)
+    elseif data.spec.name == "nvim-treesitter" then
+      pending_builds.tsupdate = true
+    end
+  end,
+})
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = function()
+    if pending_builds.tsupdate and vim.fn.exists(":TSUpdate") == 2 then
+      vim.cmd("TSUpdate")
+    end
+  end,
+})
 
-      -- custom nvchad cmd to install all mason binaries listed
-      vim.api.nvim_create_user_command("MasonInstallAll", function()
-        if opts.ensure_installed and #opts.ensure_installed > 0 then
-          vim.cmd("MasonInstall " .. table.concat(opts.ensure_installed, " "))
-        end
-      end, {})
+vim.pack.add({
+  -- Color scheme (themery dropped: single-theme user; use :colorscheme to switch)
+  { src = "https://github.com/folke/tokyonight.nvim" },
 
-      vim.g.mason_binaries_list = opts.ensure_installed
-    end,
-  },
-  {
-    "pmizio/typescript-tools.nvim",
-    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-    ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
-    config = function()
-      require("typescript-tools").setup({
-        on_attach = function(client, bufnr)
-          require("core.utils").load_mappings("lspconfig", { buffer = bufnr })
-        end,
-        capabilities = require("blink.cmp").get_lsp_capabilities(),
-      })
+  -- File tree: replaced by mini.files (Phase 4) -- mini ships from mini.nvim below
 
-      -- ESLint LSP setup for code actions
-      require("lspconfig").eslint.setup({
-        on_attach = function(client, bufnr)
-          require("core.utils").load_mappings("lspconfig", { buffer = bufnr })
-        end,
-        capabilities = require("blink.cmp").get_lsp_capabilities(),
-        filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-      })
+  -- Pickers / search (plenary kept -- still required by obsidian, typescript-tools, codecompanion)
+  { src = "https://github.com/nvim-lua/plenary.nvim" },
 
-      -- Tailwind CSS LSP
-      require("lspconfig").tailwindcss.setup({
-        on_attach = function(client, bufnr)
-          require("core.utils").load_mappings("lspconfig", { buffer = bufnr })
-        end,
-        capabilities = require("blink.cmp").get_lsp_capabilities(),
-        filetypes = { "html", "css", "javascript", "javascriptreact", "typescript", "typescriptreact" },
-      })
-    end,
-  },
-  {
-    "akinsho/bufferline.nvim",
-    version = "*",
-    dependencies = "nvim-tree/nvim-web-devicons",
-    mode = "tabs",
-    color_icons = true,
-  },
-  {
-    "nvimdev/lspsaga.nvim",
-    config = function()
-      require("lspsaga").setup {}
-    end,
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter", -- optional
-      "nvim-tree/nvim-web-devicons",     -- optional
+  -- Diagnostics / LSP UI
+  { src = "https://github.com/folke/trouble.nvim" },
+
+  -- LSP
+  { src = "https://github.com/williamboman/mason.nvim" },
+  { src = "https://github.com/neovim/nvim-lspconfig" },
+  { src = "https://github.com/pmizio/typescript-tools.nvim" },
+
+  -- Completion
+  { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
+  { src = "https://github.com/rafamadriz/friendly-snippets" },
+  { src = "https://github.com/onsails/lspkind.nvim" },
+
+  -- Treesitter (treesitter-textobjects replaced by mini.ai with TS spec in Phase 6)
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+  { src = "https://github.com/tadmccorkle/markdown.nvim" },
+
+  -- Editing (Comment.nvim dropped: Neovim 0.10+ has native gc/gcc)
+  { src = "https://github.com/stevearc/conform.nvim" },
+
+  -- Git (gitsigns replaced by mini.diff in Phase 6)
+  { src = "https://github.com/tpope/vim-fugitive" },
+  { src = "https://github.com/tpope/vim-rhubarb" },
+
+  -- Language ergonomics
+  { src = "https://github.com/tpope/vim-sleuth" },
+  { src = "https://github.com/tpope/vim-rails" },
+  { src = "https://github.com/vim-ruby/vim-ruby" },
+  { src = "https://github.com/prisma/vim-prisma" },
+  { src = "https://github.com/editorconfig/editorconfig-vim" },
+
+  -- Markdown / notes
+  { src = "https://github.com/iamcco/markdown-preview.nvim" },
+  { src = "https://github.com/epwalsh/obsidian.nvim" },
+  -- nvim-cmp is required by obsidian.nvim's completion = { nvim_cmp = true }
+  -- (the rest of the config uses blink.cmp as the primary completion engine)
+  { src = "https://github.com/hrsh7th/nvim-cmp" },
+
+  -- Mini ecosystem
+  { src = "https://github.com/echasnovski/mini.nvim" },
+  { src = "https://github.com/echasnovski/mini.extra" },
+
+  -- AI / chat: codecompanion dropped -- user runs Claude Code CLI exclusively
+})
+
+-- ----------------------------------------------------------------------------
+-- Plugin configuration (replaces former Lazy `opts`/`config` blocks)
+-- ----------------------------------------------------------------------------
+
+vim.cmd.colorscheme("tokyonight-night")
+
+require("blink.cmp").setup(require("plugins.configs.blink_cmp"))
+
+require("trouble").setup(require("plugins.configs.trouble"))
+require("core.utils").load_mappings("trouble")
+
+-- gitsigns replaced by mini.diff (configured in the mini block below)
+
+-- Statusline / tabline / clue / icons all live in mini.* below.
+-- indent-blankline (ibl) replaced by mini.indentscope.
+
+-- Comment.nvim dropped -- Neovim 0.10+ has native gc/gcc/gcc operators
+
+-- nvim-treesitter: the original lazy spec did not actually call setup()
+-- (the keys at the top level of a lazy spec entry are ignored). We preserve
+-- the same behavior here -- parsers are managed via :TSInstall / :TSUpdate
+-- and highlight is enabled via filetype plugins. nvim-treesitter v1.0+
+-- removed the `nvim-treesitter.configs` module anyway.
+
+-- mini.files is set up in the mini block below; mappings come via M.files
+
+local mason_opts = require("plugins.configs.mason")
+require("mason").setup(mason_opts)
+vim.api.nvim_create_user_command("MasonInstallAll", function()
+  if mason_opts.ensure_installed and #mason_opts.ensure_installed > 0 then
+    vim.cmd("MasonInstall " .. table.concat(mason_opts.ensure_installed, " "))
+  end
+end, {})
+vim.g.mason_binaries_list = mason_opts.ensure_installed
+
+-- LSP buffer-local keymaps -- single LspAttach autocmd handles every client
+require("core.lsp_attach")
+
+-- typescript-tools.nvim handles TS/JS LSP via its own setup. Capabilities
+-- are passed in directly; the LspAttach autocmd above wires up keymaps for
+-- every client (including this one).
+require("typescript-tools").setup({
+  capabilities = require("blink.cmp").get_lsp_capabilities(),
+})
+
+-- Native LSP for every other server (lua_ls, html, tailwindcss, eslint,
+-- pyright, vimls, solargraph, terraformls, prismals). nvim-lspconfig v3+
+-- ships the presets at lsp/<name>.lua; we just enable them.
+require("lsp_setup")
+
+require("obsidian").setup({
+  workspaces = {
+    {
+      name = "personal",
+      path = os.getenv("OBSIDIAN_WORKSPACE_PATH"),
     },
   },
-  {
-    "epwalsh/obsidian.nvim",
-    version = "*", -- recommended, use latest release instead of latest commit
-
-    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-    -- event = {
-    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
-
-    --   "BufReadPre path/to/my-vault/**.md",
-    --   "BufNewFile path/to/my-vault/**.md",
-    -- },
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "hrsh7th/nvim-cmp",
-      "nvim-treesitter/nvim-treesitter",
-    },
-
-    opts = {
-      workspaces = {
-        {
-          name = "personal",
-          path = os.getenv "OBSIDIAN_WORKSPACE_PATH",
-        },
-      },
-
-      daily_notes = {
-        folder = "daily-notes",
-        date_format = "%Y-%m-%d",
-        template = "system/templater-templates/daily-note-template.md",
-      },
-
-      templates = {
-        subdir = "system/templates",
-      },
-
-      completion = {
-        nvim_cmp = true,
-      },
-
-      mappings = {
-        ["gf"] = {
-          action = function()
-            return require("obsidian").util.gf_passthrough()
-          end,
-          opts = { noremap = false, expr = true, buffer = true },
-        },
-      },
+  daily_notes = {
+    folder = "daily-notes",
+    date_format = "%Y-%m-%d",
+    template = "system/templater-templates/daily-note-template.md",
+  },
+  templates = {
+    subdir = "system/templates",
+  },
+  completion = {
+    nvim_cmp = true,
+  },
+  mappings = {
+    ["gf"] = {
+      action = function()
+        return require("obsidian").util.gf_passthrough()
+      end,
+      opts = { noremap = false, expr = true, buffer = true },
     },
   },
-  {
-    "ray-x/lsp_signature.nvim",
-    event = "VeryLazy",
-    opts = {},
-    config = function(_, opts)
-      require("lsp_signature").setup(opts)
-    end,
+})
+
+require("conform").setup({
+  formatters_by_ft = {
+    javascript = { "prettierd", "eslint_d" },
+    typescript = { "prettierd", "eslint_d" },
+    javascriptreact = { "prettierd", "eslint_d" },
+    typescriptreact = { "prettierd", "eslint_d" },
+    css = { "prettierd" },
+    json = { "prettierd" },
+    lua = { "stylua" },
   },
-  {
-    "stevearc/conform.nvim",
-    event = { "BufReadPre", "BufNewFile" },
-    config = function()
-      local conform = require "conform"
-      conform.setup {
-        formatters_by_ft = {
-          javascript = { "prettierd", "eslint_d" },
-          typescript = { "prettierd", "eslint_d" },
-          javascriptreact = { "prettierd", "eslint_d" },
-          typescriptreact = { "prettierd", "eslint_d" },
-          css = { "prettierd" },
-          json = { "prettierd" },
-          lua = { "stylua" },
-        },
-        formatters = {
-          eslint_d = {
-            cwd = require("conform.util").root_file({ "package.json", ".eslintrc.js", ".eslintrc.json", ".eslintrc.cjs", ".eslintrc.yaml", ".eslintrc.yml", "eslint.config.mjs", "eslint.config.js" }),
-            require_cwd = false,
-            timeout_ms = 5000,
-          },
-          prettierd = {
-            cwd = require("conform.util").root_file({ "package.json", ".prettierrc", ".prettierrc.json", ".prettierrc.js", ".prettierrc.cjs", "prettier.config.js" }),
-            require_cwd = false,
-            timeout_ms = 5000,
-          },
-        },
-        format_on_save = {
-          lsp_format = "fallback",
-          async = false,
-          timeout_ms = 5000,
-        },
-      }
-    end,
-  },
-  {
-    "echasnovski/mini.nvim",
-    config = function()
-      require("mini.animate").setup()
-      require("mini.notify").setup()
-      require("mini.pick").setup()
-      require("mini.doc").setup({
-        lsp = {
-          signature = true,
-          completion = true,
-        }
-      })
-    end,
-    version = false
-  },
-  {
-    "neoclide/coc.nvim",
-    branch = "release",
-    build = function()
-      vim.cmd("CocInstall coc-prisma")
-    end,
-    preferences = {
-      formatOnSaveFileTypes = {
-        "prisma"
-      }
-    }
-  },
-  {
-    "olimorris/codecompanion.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-      "echasnovski/mini.nvim"
+  formatters = {
+    eslint_d = {
+      cwd = require("conform.util").root_file({
+        "package.json", ".eslintrc.js", ".eslintrc.json", ".eslintrc.cjs",
+        ".eslintrc.yaml", ".eslintrc.yml", "eslint.config.mjs", "eslint.config.js",
+      }),
+      require_cwd = false,
+      timeout_ms = 5000,
     },
-    opts = require "plugins.configs.codecompanion"
-  }
-}
+    prettierd = {
+      cwd = require("conform.util").root_file({
+        "package.json", ".prettierrc", ".prettierrc.json",
+        ".prettierrc.js", ".prettierrc.cjs", "prettier.config.js",
+      }),
+      require_cwd = false,
+      timeout_ms = 5000,
+    },
+  },
+  format_on_save = {
+    lsp_format = "fallback",
+    async = false,
+    timeout_ms = 5000,
+  },
+})
+
+-- mini.icons must be set up FIRST so the other mini modules
+-- (statusline, tabline, files, pick) pick it up. We then mock the
+-- nvim-web-devicons API so any plugin that still imports it keeps working.
+require("mini.icons").setup()
+MiniIcons.mock_nvim_web_devicons()
+
+require("mini.animate").setup()
+require("mini.notify").setup()
+require("mini.pick").setup()
+require("mini.extra").setup()
+require("mini.files").setup({
+  windows = {
+    preview = true,
+    width_focus = 30,
+    width_preview = 50,
+  },
+})
+require("mini.doc").setup({
+  lsp = {
+    signature = true,
+    completion = true,
+  },
+})
+
+require("mini.statusline").setup({
+  use_icons = true,
+})
+require("mini.tabline").setup()
+
+-- Editing modules added in Phase 6
+require("mini.pairs").setup()
+require("mini.surround").setup()
+
+-- mini.ai with treesitter spec replaces nvim-treesitter-textobjects.
+-- f = function (af, if), c = class, o = conditional/loop.
+do
+  local ai = require("mini.ai")
+  ai.setup({
+    custom_textobjects = {
+      f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
+      c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
+      o = ai.gen_spec.treesitter({
+        a = { "@conditional.outer", "@loop.outer" },
+        i = { "@conditional.inner", "@loop.inner" },
+      }),
+    },
+  })
+end
+
+require("mini.indentscope").setup({
+  -- linear instead of default cubic to feel less animated/jarring
+  draw = { animation = require("mini.indentscope").gen_animation.none() },
+  symbol = "│",
+})
+
+-- mini.diff replaces gitsigns.nvim. Gutter signs only (no inline blame --
+-- use :Git blame from fugitive when needed).
+require("mini.diff").setup({
+  view = {
+    style = "sign",
+    signs = { add = "+", change = "~", delete = "_" },
+  },
+})
+
+-- mini.clue replaces which-key.nvim. Triggers + clue groups for the
+-- <leader>* prefixes the user has wired up across find/git/lsp/diagnostic.
+do
+  local miniclue = require("mini.clue")
+  miniclue.setup({
+    triggers = {
+      { mode = "n", keys = "<Leader>" },
+      { mode = "x", keys = "<Leader>" },
+      { mode = "n", keys = "g" },
+      { mode = "x", keys = "g" },
+      { mode = "n", keys = "'" },
+      { mode = "n", keys = "`" },
+      { mode = "n", keys = '"' },
+      { mode = "x", keys = '"' },
+      { mode = "i", keys = "<C-r>" },
+      { mode = "c", keys = "<C-r>" },
+      { mode = "n", keys = "<C-w>" },
+      { mode = "n", keys = "z" },
+      { mode = "x", keys = "z" },
+    },
+    clues = {
+      miniclue.gen_clues.builtin_completion(),
+      miniclue.gen_clues.g(),
+      miniclue.gen_clues.marks(),
+      miniclue.gen_clues.registers(),
+      miniclue.gen_clues.windows(),
+      miniclue.gen_clues.z(),
+      { mode = "n", keys = "<Leader>f", desc = "+Find" },
+      { mode = "n", keys = "<Leader>h", desc = "+Git hunks" },
+      { mode = "n", keys = "<Leader>l", desc = "+LSP" },
+      { mode = "n", keys = "<Leader>w", desc = "+Workspace" },
+      { mode = "n", keys = "<Leader>x", desc = "+Trouble/diagnostics" },
+      { mode = "n", keys = "<Leader>c", desc = "+Code/copy" },
+      { mode = "n", keys = "<Leader>g", desc = "+Git" },
+      { mode = "n", keys = "<Leader>t", desc = "+Toggle" },
+    },
+    window = {
+      delay = 300,
+    },
+  })
+end
+
+-- Promote mini.pick to primary picker (replaces telescope + fzf-lua).
+-- Set vim.ui.select handler so :lua vim.ui.select() pickers (used by code
+-- actions, refactors, etc.) flow through mini.pick.
+vim.ui.select = MiniPick.ui_select
+require("core.utils").load_mappings("pick")
+require("core.utils").load_mappings("files")
+require("core.utils").load_mappings("diff")
+
+-- codecompanion dropped -- user runs Claude Code CLI exclusively
