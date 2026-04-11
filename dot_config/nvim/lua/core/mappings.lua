@@ -71,6 +71,10 @@ M.pick = {
       function() require("mini.extra").pickers.buf_lines({ scope = "current" }) end,
       "Find in current buffer",
     },
+    ["<leader>fs"] = {
+      function() require("mini.extra").pickers.lsp({ scope = "document_symbol" }) end,
+      "Document symbols",
+    },
 
     -- git
     ["<leader>cm"] = {
