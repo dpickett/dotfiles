@@ -1,4 +1,4 @@
 #!/bin/env zsh
 
-export MISE_OVERRIDE_TOOL_VERSIONS_FILENAME=none
+export MISE_OVERRIDE_TOOL_VERSIONS_FILENAMES=none
 eval "$(~/bin/mise activate zsh)"

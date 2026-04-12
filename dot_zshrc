@@ -17,6 +17,8 @@ eval "$(starship init zsh)"
 export PNPM_HOME="$HOME/.local/share/pnpm"
 [[ -d "$PNPM_HOME" ]] && export PATH="$PNPM_HOME:$PATH"
 
+export PATH="$PATH:$HOME/bin"
+
 fpath=(~/.cache/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-mfaerevaag-SLASH-wd/wd.sh $fpath)
 
 for f in ~/.zsh/*.zsh; do source $f; done

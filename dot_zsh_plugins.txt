@@ -25,3 +25,5 @@ mfaerevaag/wd
 ~/.antidote_plugins/asdf
 ~/.antidote_plugins/gum
 ~/.antidote_plugins/sesh
+
+~/.antidote_plugins/mise
