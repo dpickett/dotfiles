@@ -27,3 +27,4 @@ mfaerevaag/wd
 ~/.antidote_plugins/sesh
 
 ~/.antidote_plugins/mise
+~/.antidote_plugins/gcloud
