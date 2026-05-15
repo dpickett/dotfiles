@@ -1,0 +1,18 @@
+{
+  "lastChangelogVersion": "0.74.0",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.3-codex",
+  "packages": [
+    {
+      "source": "npm:@plannotator/pi-extension",
+      "skills": []
+    },
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@ogulcancelik/pi-ghostty-theme-sync",
+    "npm:pi-obsidian-vault",
+    "npm:pi-subagents",
+    "https://github.com/kepano/obsidian-skills"
+  ],
+  "skills": ["~/.claude/skills"],
+  "defaultThinkingLevel": "medium"
+}
