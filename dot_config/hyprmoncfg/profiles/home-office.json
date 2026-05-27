@@ -1,0 +1,66 @@
+{
+  "name": "home-office",
+  "created_at": "2026-05-27T18:46:00.672790145Z",
+  "updated_at": "2026-05-27T18:48:29.106020143Z",
+  "outputs": [
+    {
+      "key": "lg electronics|lg ultragear|405ntuw1f454",
+      "match_key": "lg electronics|lg ultragear|405ntuw1f454",
+      "name": "DP-1",
+      "make": "LG Electronics",
+      "model": "LG ULTRAGEAR",
+      "serial": "405NTUW1F454",
+      "enabled": true,
+      "mode": "5120x1440@199.99Hz",
+      "width": 5120,
+      "height": 1440,
+      "refresh": 199.99,
+      "x": 1440,
+      "y": 700,
+      "scale": 1,
+      "transform": 0,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    },
+    {
+      "key": "samsung electric company|s27h85x|hchmb00532",
+      "match_key": "samsung electric company|s27h85x|hchmb00532",
+      "name": "DP-2",
+      "make": "Samsung Electric Company",
+      "model": "S27H85x",
+      "serial": "HCHMB00532",
+      "enabled": true,
+      "mode": "2560x1440@59.95Hz",
+      "width": 2560,
+      "height": 1440,
+      "refresh": 59.95,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "transform": 1,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    }
+  ],
+  "workspaces": {
+    "enabled": true,
+    "strategy": "sequential",
+    "max_workspaces": 9,
+    "group_size": 5,
+    "monitor_order": [
+      "lg electronics|lg ultragear|405ntuw1f454",
+      "samsung electric company|s27h85x|hchmb00532"
+    ]
+  },
+  "exec": ""
+}
