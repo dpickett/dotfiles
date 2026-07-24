@@ -1,0 +1,3 @@
+# Private herdr project manifests live in their own repo, cloned into place.
+# chezmoi must never manage or remove them.
+.config/herdr/workspaces

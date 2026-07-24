@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+# Summon a project: gum-pick a manifest, then create-or-focus its workspace.
+# Bound to a herdr popup key in ~/.config/herdr/config.toml.
+
+project=$(herdr-ws list | gum filter --limit 1 --no-sort --fuzzy \
+  --placeholder 'Pick a project' --height 15 --prompt='⚡ ')
+
+[[ -n $project ]] && herdr-ws up "$project"

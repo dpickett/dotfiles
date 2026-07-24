@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""herdr-ws — summon project workspaces and lazy services from TOML manifests.
+
+Manifests live in ~/.config/herdr/workspaces/<name>.toml (a private repo) and
+are interpreted into herdr socket-API CLI calls. A project maps to one herdr
+workspace; eager [[tab]]s are created on `up`, lazy [[service]]s on demand.
+"""
+import argparse
+import json
+import os
+import subprocess
+import sys
+import tomllib
+from pathlib import Path
+
+WORKSPACES_DIR = Path(
+    os.environ.get("HERDR_WORKSPACES_DIR", Path.home() / ".config" / "herdr" / "workspaces")
+)
+
+
+def herdr(*args):
+    proc = subprocess.run(("herdr", *args), capture_output=True, text=True)
+    label = "herdr " + " ".join(args)
+    if proc.returncode != 0:
+        sys.exit(f"{label} failed: {proc.stderr.strip() or proc.stdout.strip()}")
+    out = proc.stdout.strip()
+    if not out:
+        return None
+    data = json.loads(out)
+    if isinstance(data, dict) and "error" in data:
+        sys.exit(f"{label} error: {data['error'].get('message', data['error'])}")
+    return data.get("result", data) if isinstance(data, dict) else data
+
+
+def expand(path):
+    return os.path.expanduser(os.path.expandvars(path))
+
+
+def load(project):
+    path = WORKSPACES_DIR / f"{project}.toml"
+    if not path.exists():
+        sys.exit(f"no manifest: {path}")
+    with path.open("rb") as f:
+        manifest = tomllib.load(f)
+    manifest.setdefault("label", project)
+    return manifest
+
+
+def workspaces():
+    return (herdr("workspace", "list") or {}).get("workspaces", [])
+
+
+def find_workspace(label):
+    return next((w for w in workspaces() if w.get("label") == label), None)
+
+
+def bring_up(manifest):
+    label = manifest["label"]
+    existing = find_workspace(label)
+    if existing:
+        herdr("workspace", "focus", existing["workspace_id"])
+        return existing["workspace_id"]
+
+    created = herdr(
+        "workspace", "create", "--label", label, "--cwd", expand(manifest["cwd"]), "--focus"
+    )
+    wid = created["workspace"]["workspace_id"]
+    for i, tab in enumerate(manifest.get("tab", [])):
+        if i == 0:
+            herdr("tab", "rename", created["tab"]["tab_id"], tab["name"])
+            pane_id = created["root_pane"]["pane_id"]
+        else:
+            pane_id = herdr("tab", "create", "--label", tab["name"], "--workspace", wid)[
+                "root_pane"
+            ]["pane_id"]
+        if tab.get("command"):
+            herdr("pane", "run", pane_id, tab["command"])
+
+    tabs = herdr("tab", "list", "--workspace", wid)["tabs"]
+    if tabs:
+        herdr("tab", "focus", tabs[0]["tab_id"])
+    return wid
+
+
+def cmd_list(_):
+    for path in sorted(WORKSPACES_DIR.glob("*.toml")):
+        print(path.stem)
+
+
+def cmd_current(_):
+    focused = next((w for w in workspaces() if w.get("focused")), None)
+    if focused:
+        print(focused.get("label", ""))
+
+
+def cmd_up(args):
+    bring_up(load(args.project))
+
+
+def cmd_services(args):
+    for service in load(args.project).get("service", []):
+        print(service["name"])
+
+
+def cmd_service(args):
+    manifest = load(args.project)
+    service = next(
+        (s for s in manifest.get("service", []) if s["name"] == args.service), None
+    )
+    if not service:
+        sys.exit(f"no service '{args.service}' in {args.project}")
+
+    wid = bring_up(manifest)
+    tabs = herdr("tab", "list", "--workspace", wid)["tabs"]
+    existing = next((t for t in tabs if t.get("label") == args.service), None)
+    if existing:
+        herdr("tab", "focus", existing["tab_id"])
+        return
+
+    created = herdr("tab", "create", "--label", args.service, "--workspace", wid, "--focus")
+    if service.get("command"):
+        herdr("pane", "run", created["root_pane"]["pane_id"], service["command"])
+
+
+def main():
+    parser = argparse.ArgumentParser(prog="herdr-ws")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("list").set_defaults(func=cmd_list)
+    sub.add_parser("current").set_defaults(func=cmd_current)
+    up = sub.add_parser("up")
+    up.add_argument("project")
+    up.set_defaults(func=cmd_up)
+    services = sub.add_parser("services")
+    services.add_argument("project")
+    services.set_defaults(func=cmd_services)
+    service = sub.add_parser("service")
+    service.add_argument("project")
+    service.add_argument("service")
+    service.set_defaults(func=cmd_service)
+    args = parser.parse_args()
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()
