@@ -4,6 +4,12 @@
 Manifests live in ~/.config/herdr/workspaces/<name>.toml (a private repo) and
 are interpreted into herdr socket-API CLI calls. A project maps to one herdr
 workspace; eager [[tab]]s are created on `up`, lazy [[service]]s on demand.
+
+A project may also carry its own manifest at <checkout>/.herdr/workspace.toml,
+checked in alongside the code. Where the personal manifest says where a project
+lives and how you like to sit in it, the checked-in one says what the project
+runs — so `[[service]]` belongs there, and it wins over the personal file. That
+split keeps machine-specific paths and editor choices out of a shared repo.
 """
 import argparse
 import json
@@ -36,12 +42,51 @@ def expand(path):
     return os.path.expanduser(os.path.expandvars(path))
 
 
-def load(project):
-    path = WORKSPACES_DIR / f"{project}.toml"
-    if not path.exists():
-        sys.exit(f"no manifest: {path}")
-    with path.open("rb") as f:
-        manifest = tomllib.load(f)
+PROJECT_MANIFEST = Path(".herdr") / "workspace.toml"
+
+
+def read_manifest(path):
+    if not path or not Path(path).exists():
+        return None
+    with Path(path).open("rb") as f:
+        return tomllib.load(f)
+
+
+def personal_manifest_path(project):
+    return WORKSPACES_DIR / f"{project}.toml"
+
+
+def project_manifest_path(root):
+    return Path(expand(root)) / PROJECT_MANIFEST if root else None
+
+
+def find_project_manifest(roots):
+    """First checked-in manifest among `roots`, in order of preference."""
+    for root in roots:
+        path = project_manifest_path(root)
+        if path and path.exists():
+            return path
+    return None
+
+
+def load(project, roots=()):
+    """Merge the personal manifest with the project's checked-in one.
+
+    `roots` are candidate checkouts to search, in order. A worktree passes its
+    own path first and the main checkout second, so it prefers its own copy but
+    still finds services on a branch cut before the manifest was added. Defaults
+    to the personal manifest's cwd.
+    """
+    personal = read_manifest(personal_manifest_path(project)) or {}
+    roots = tuple(r for r in roots if r) or (personal.get("cwd"),)
+    checked_in = read_manifest(find_project_manifest(roots)) or {}
+    if not personal and not checked_in:
+        sys.exit(f"no manifest: {personal_manifest_path(project)}")
+
+    manifest = dict(personal)
+    for key in ("tab", "service"):
+        if key in checked_in:
+            manifest[key] = checked_in[key]
     manifest.setdefault("label", project)
     return manifest
 
@@ -54,22 +99,61 @@ def find_workspace(label):
     return next((w for w in workspaces() if w.get("label") == label), None)
 
 
-def bring_up(manifest):
-    label = manifest["label"]
-    existing = find_workspace(label)
-    if existing:
-        herdr("workspace", "focus", existing["workspace_id"])
-        return existing["workspace_id"]
+def focused_workspace():
+    return next((w for w in workspaces() if w.get("focused")), None)
 
-    created = herdr(
-        "workspace", "create", "--label", label, "--cwd", expand(manifest["cwd"]), "--focus"
-    )
-    wid = created["workspace"]["workspace_id"]
+
+def has_manifest(name, roots=()):
+    if name and personal_manifest_path(name).exists():
+        return True
+    return bool(find_project_manifest(r for r in roots if r))
+
+
+def roots_of(workspace):
+    """Checkouts to search for a workspace's manifest, nearest first.
+
+    For a worktree these differ: checkout_path is the worktree, repo_root the
+    main checkout it was cut from.
+    """
+    worktree = (workspace or {}).get("worktree") or {}
+    return (worktree.get("checkout_path") or "", worktree.get("repo_root") or "")
+
+
+def project_of(workspace):
+    """Manifest name for a workspace, by label or by the repo it checks out.
+
+    A worktree workspace is labelled after its branch, so the label will not
+    match a manifest. herdr reports the parent repo as worktree.repo_name for
+    both the main checkout and every linked worktree, which is what lets a
+    worktree inherit its repo's manifest. The checkout is consulted too, so a
+    project whose manifest is checked in resolves with no personal file at all.
+    """
+    if not workspace:
+        return ""
+    label = workspace.get("label") or ""
+    if has_manifest(label):
+        return label
+    repo_name = (workspace.get("worktree") or {}).get("repo_name") or ""
+    return repo_name if has_manifest(repo_name, roots_of(workspace)) else ""
+
+
+def apply_tabs(manifest, wid, first_tab_id, first_pane_id, first_tab_label=None):
+    """Realise the manifest's eager tabs in an existing workspace.
+
+    Skips tabs that are already present so this is safe to re-run against a
+    workspace that has been partly set up, and never re-runs a command in a
+    pane that is already hosting it.
+    """
+    existing = {t.get("label") for t in herdr("tab", "list", "--workspace", wid)["tabs"]}
     for i, tab in enumerate(manifest.get("tab", [])):
         if i == 0:
-            herdr("tab", "rename", created["tab"]["tab_id"], tab["name"])
-            pane_id = created["root_pane"]["pane_id"]
+            if first_tab_label == tab["name"]:
+                continue
+            herdr("tab", "rename", first_tab_id, tab["name"])
+            pane_id = first_pane_id
         else:
+            if tab["name"] in existing:
+                continue
             pane_id = herdr("tab", "create", "--label", tab["name"], "--workspace", wid)[
                 "root_pane"
             ]["pane_id"]
@@ -79,6 +163,31 @@ def bring_up(manifest):
     tabs = herdr("tab", "list", "--workspace", wid)["tabs"]
     if tabs:
         herdr("tab", "focus", tabs[0]["tab_id"])
+
+
+def bring_up(manifest):
+    label = manifest["label"]
+    existing = find_workspace(label)
+    if existing:
+        herdr("workspace", "focus", existing["workspace_id"])
+        return existing["workspace_id"]
+
+    if not manifest.get("cwd"):
+        sys.exit(
+            f"cannot summon '{label}': no cwd. A checked-in manifest says what a "
+            f"project runs, not where it lives — add {personal_manifest_path(label)}"
+        )
+    created = herdr(
+        "workspace", "create", "--label", label, "--cwd", expand(manifest["cwd"]), "--focus"
+    )
+    wid = created["workspace"]["workspace_id"]
+    apply_tabs(
+        manifest,
+        wid,
+        created["tab"]["tab_id"],
+        created["root_pane"]["pane_id"],
+        created["tab"].get("label"),
+    )
     return wid
 
 
@@ -88,29 +197,70 @@ def cmd_list(_):
 
 
 def cmd_current(_):
-    focused = next((w for w in workspaces() if w.get("focused")), None)
-    if focused:
-        print(focused.get("label", ""))
+    project = project_of(focused_workspace())
+    if project:
+        print(project)
 
 
 def cmd_up(args):
     bring_up(load(args.project))
 
 
+def cmd_adopt(args):
+    """Apply a project's eager tabs to a workspace herdr already created.
+
+    `herdr worktree open` produces a workspace that is linked to the repo but
+    otherwise bare; `herdr workspace create` produces the manifest layout but no
+    worktree linkage. Adopting bridges the two. A repo with no manifest is not an
+    error — there is simply nothing to mirror.
+    """
+    # Read the checkout from the workspace itself so a worktree adopts its own
+    # checked-in manifest rather than the main checkout's.
+    roots = roots_of(herdr("workspace", "get", args.workspace)["workspace"])
+    if not has_manifest(args.project, roots):
+        return
+    manifest = load(args.project, roots)
+    tabs = herdr("tab", "list", "--workspace", args.workspace)["tabs"]
+    if not tabs:
+        sys.exit(f"workspace {args.workspace} has no tabs to adopt")
+    first = tabs[0]
+    panes = herdr("pane", "list", "--workspace", args.workspace)["panes"]
+    root_pane = next((p for p in panes if p.get("tab_id") == first["tab_id"]), None)
+    if not root_pane:
+        sys.exit(f"tab {first['tab_id']} has no pane to adopt")
+    apply_tabs(
+        manifest, args.workspace, first["tab_id"], root_pane["pane_id"], first.get("label")
+    )
+
+
+def workspace_in(project):
+    """The focused workspace, when it belongs to `project`.
+
+    Anchors service lookup and launching to the checkout the caller is standing
+    in, which in a worktree is the worktree rather than the main checkout.
+    """
+    focused = focused_workspace()
+    return focused if focused and project_of(focused) == project else None
+
+
 def cmd_services(args):
-    for service in load(args.project).get("service", []):
+    here = workspace_in(args.project)
+    for service in load(args.project, roots_of(here)).get("service", []):
         print(service["name"])
 
 
 def cmd_service(args):
-    manifest = load(args.project)
+    here = workspace_in(args.project)
+    manifest = load(args.project, roots_of(here))
     service = next(
         (s for s in manifest.get("service", []) if s["name"] == args.service), None
     )
     if not service:
         sys.exit(f"no service '{args.service}' in {args.project}")
 
-    wid = bring_up(manifest)
+    # Start the service where it was asked for, so a worktree's services run
+    # against its own database, Redis, and node_modules.
+    wid = here["workspace_id"] if here else bring_up(manifest)
     tabs = herdr("tab", "list", "--workspace", wid)["tabs"]
     existing = next((t for t in tabs if t.get("label") == args.service), None)
     if existing:
@@ -130,6 +280,10 @@ def main():
     up = sub.add_parser("up")
     up.add_argument("project")
     up.set_defaults(func=cmd_up)
+    adopt = sub.add_parser("adopt")
+    adopt.add_argument("project")
+    adopt.add_argument("--workspace", required=True)
+    adopt.set_defaults(func=cmd_adopt)
     services = sub.add_parser("services")
     services.add_argument("project")
     services.set_defaults(func=cmd_services)
