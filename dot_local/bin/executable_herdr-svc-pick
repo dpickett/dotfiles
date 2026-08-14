@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+# Start-or-focus a lazy service in the current project's workspace.
+# Bound to a herdr popup key in ~/.config/herdr/config.toml.
+
+project=$(herdr-ws current)
+if [[ -z $project ]]; then
+  gum style 'not in a project workspace'; sleep 1; exit 0
+fi
+
+services=$(herdr-ws services "$project" 2>/dev/null)
+if [[ -z $services ]]; then
+  gum style "no services for '$project'"; sleep 1; exit 0
+fi
+
+svc=$(print -r -- "$services" | gum filter --limit 1 --no-sort --fuzzy \
+  --placeholder "Start a service in $project" --height 15 --prompt='⚡ ')
+
+[[ -n $svc ]] && herdr-ws service "$project" "$svc"

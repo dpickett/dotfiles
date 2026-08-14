@@ -1,0 +1,48 @@
+[theme]
+name = "catppuccin"
+
+
+[terminal]
+default_shell = ""
+new_cwd = "follow"
+
+[keys]
+prefix = "ctrl+a"
+
+# split_vertical   = "prefix+v"        # split right (herdr default)
+# split_horizontal = "prefix+minus"    # split down  (herdr default)
+
+reload_config = "prefix+shift+r"     # or: herdr server reload-config
+
+workspace_picker = "prefix+w"
+goto             = "prefix+g"
+
+[[keys.command]]
+key = "prefix+alt+g"
+type = "popup"
+command = "lazygit"
+width = "80%"
+height = "80%"
+
+[[keys.command]]
+key = "prefix+t"
+type = "popup"
+command = "herdr-ws-pick"
+width = "50%"
+height = "60%"
+
+[[keys.command]]
+key = "prefix+shift+s"
+type = "popup"
+command = "herdr-svc-pick"
+width = "50%"
+height = "60%"
+
+[ui]
+mouse_capture  = true
+copy_on_select = true
+sidebar_start_collapsed = false
+confirm_close = true
+
+[session]
+resume_agents_on_restore = true
