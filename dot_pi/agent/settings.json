@@ -1,7 +1,7 @@
 {
-  "lastChangelogVersion": "0.74.0",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.3-codex",
+  "lastChangelogVersion": "0.84.1",
+  "defaultProvider": "llama-server",
+  "defaultModel": "qwen/qwen3.6-35b-a3b",
   "packages": [
     {
       "source": "npm:@plannotator/pi-extension",
@@ -9,10 +9,16 @@
     },
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@ogulcancelik/pi-ghostty-theme-sync",
-    "npm:pi-obsidian-vault",
-    "npm:pi-subagents",
-    "https://github.com/kepano/obsidian-skills"
+    "npm:@llblab/pi-telegram",
+    "https://github.com/kepano/obsidian-skills",
+    "npm:pi-powerline-footer",
+    "npm:@gotgenes/pi-permission-system",
+    "npm:pi-hashline-edit-pro"
   ],
-  "skills": ["~/.claude/skills"],
-  "defaultThinkingLevel": "medium"
+  "skills": [
+    "~/.claude/skills"
+  ],
+  "defaultThinkingLevel": "medium",
+  "theme": "ghostty-sync-762fe13d",
+  "powerline": "nerd"
 }
