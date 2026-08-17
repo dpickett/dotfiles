@@ -1,0 +1,4 @@
+# Hyprland's hyprlang config, replaced by hyprland.lua in 0.55+.
+.config/hypr/hyprland.conf
+.config/hypr/application_bindings.conf
+.config/hypr/lid-switch.conf

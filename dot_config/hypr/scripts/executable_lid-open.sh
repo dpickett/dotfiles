@@ -5,8 +5,8 @@ external_monitors=$(hyprctl monitors -j | jq -r '.[] | select(.name != "eDP-1") 
 
 if [[ -n "$external_monitors" ]]; then
     # External monitor(s) present - enable laptop display as secondary
-    hyprctl keyword monitor "eDP-1, preferred, auto, auto"
+    hyprctl eval 'hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto", scale = "auto" })'
 else
     # No external monitors - enable laptop display as primary
-    hyprctl keyword monitor "eDP-1, preferred, 0x0, 1"
+    hyprctl eval 'hl.monitor({ output = "eDP-1", mode = "preferred", position = "0x0", scale = 1 })'
 fi
