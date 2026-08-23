@@ -7,3 +7,6 @@
 .asdfrc
 .tool-versions
 .antidote_plugins/asdf
+
+# Superseded by .claude/statusline.sh (managed as dot_claude/executable_statusline.sh).
+.claude/statusline-command.sh
