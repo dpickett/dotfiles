@@ -22,7 +22,6 @@ mfaerevaag/wd
 ~/.antidote_plugins/launcher-os
 
 # golang dependent
-~/.antidote_plugins/asdf
 ~/.antidote_plugins/gum
 ~/.antidote_plugins/sesh
 
