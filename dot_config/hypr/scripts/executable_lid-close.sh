@@ -14,7 +14,7 @@ logger "lid-close.sh: on_power=$on_power, external_monitors=$external_monitors"
 if [[ "$on_power" == "true" && -n "$external_monitors" ]]; then
     # Plugged into power AND external monitor connected - disable laptop monitor
     logger "lid-close.sh: Disabling internal monitor"
-    hyprctl keyword monitor "eDP-1, disable"
+    hyprctl eval 'hl.monitor({ output = "eDP-1", disabled = true })'
 else
     # Either not on power OR no external monitor - lock and suspend
     logger "lid-close.sh: Attempting suspend"
