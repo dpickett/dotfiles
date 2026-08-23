@@ -2,3 +2,8 @@
 .config/hypr/hyprland.conf
 .config/hypr/application_bindings.conf
 .config/hypr/lid-switch.conf
+
+# asdf, replaced by mise for runtime version management.
+.asdfrc
+.tool-versions
+.antidote_plugins/asdf
