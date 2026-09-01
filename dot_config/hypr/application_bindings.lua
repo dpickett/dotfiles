@@ -15,7 +15,10 @@ hl.bind("SUPER + ALT + N", hl.dsp.exec_cmd("waydroid show-full-ui"),
 hl.bind("SUPER + ALT + O", hl.dsp.exec_cmd("launch-os-launch-or-focus.sh Chromium chromium"),
     { description = "Chrome" })
 
-hl.bind("SUPER + SHIFT + period", hl.dsp.exec_cmd("pkill -USR2 -x handy"))
+hl.bind("SUPER + SHIFT + space", hl.dsp.exec_cmd("pkill -USR2 -x handy"),
+    { description = "Voice to text (toggle)" })
+hl.bind("SUPER + SHIFT + period", hl.dsp.exec_cmd("pkill -USR2 -x handy"),
+    { description = "Voice to text (toggle)" })
 
 hl.bind("SUPER + ALT + R", hl.dsp.exec_cmd("~/.config/hypr/scripts/fix-monitors.sh"),
     { description = "Fix monitors" })
