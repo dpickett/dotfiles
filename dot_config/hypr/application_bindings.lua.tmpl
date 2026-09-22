@@ -1,6 +1,11 @@
-hl.bind("SUPER + ALT + B", hl.dsp.exec_cmd("launch-os-launch-or-focus.sh vivaldi-stable vivaldi-stable"),
+{{- /* Arch and nixpkgs ship these apps under different binary names. */ -}}
+{{- $vivaldi := "vivaldi" -}}
+{{- if lookPath "vivaldi-stable" }}{{ $vivaldi = "vivaldi-stable" }}{{ end -}}
+{{- $spotify := "spotify" -}}
+{{- if lookPath "spotify-launcher" }}{{ $spotify = "spotify-launcher" }}{{ end -}}
+hl.bind("SUPER + ALT + B", hl.dsp.exec_cmd("launch-os-launch-or-focus.sh vivaldi-stable {{ $vivaldi }}"),
     { description = "Browser" })
-hl.bind("SUPER + ALT + M", hl.dsp.exec_cmd("launch-os-launch-or-focus.sh Spotify spotify-launcher"),
+hl.bind("SUPER + ALT + M", hl.dsp.exec_cmd("launch-os-launch-or-focus.sh Spotify {{ $spotify }}"),
     { description = "Music" })
 hl.bind("SUPER + ALT + W", hl.dsp.exec_cmd("launch-os-launch-or-focus.sh Signal signal-desktop"),
     { description = "Signal" })
@@ -25,11 +30,11 @@ hl.bind("SUPER + ALT + R", hl.dsp.exec_cmd("~/.config/hypr/scripts/fix-monitors.
 
 -- SSB Binds
 hl.bind("SUPER + ALT + G",
-    hl.dsp.exec_cmd('launch-os-launch-or-focus.sh mail.google.com "vivaldi-stable --app=https://mail.google.com"'),
+    hl.dsp.exec_cmd('launch-os-launch-or-focus.sh mail.google.com "{{ $vivaldi }} --app=https://mail.google.com"'),
     { description = "Gmail" })
 hl.bind("SUPER + ALT + 0",
-    hl.dsp.exec_cmd('launch-os-launch-or-focus.sh calendar.google.com "vivaldi-stable --app=https://calendar.google.com"'),
+    hl.dsp.exec_cmd('launch-os-launch-or-focus.sh calendar.google.com "{{ $vivaldi }} --app=https://calendar.google.com"'),
     { description = "Google Calendar" })
 hl.bind("SUPER + ALT + Z",
-    hl.dsp.exec_cmd('launch-os-launch-or-focus.sh zoom.us "vivaldi-stable --app=https://zoom.us/wc"'),
+    hl.dsp.exec_cmd('launch-os-launch-or-focus.sh zoom.us "{{ $vivaldi }} --app=https://zoom.us/wc"'),
     { description = "Zoom" })

@@ -8,13 +8,14 @@ local function source(path)
     end
 end
 
+{{ if stat "/etc/launcher-os/hypr" -}}
+local launcher_os = "/etc/launcher-os/hypr/"
+{{- else -}}
 local launcher_os = "/usr/local/share/launcher-os/default/hypr/"
+{{- end }}
 
 source(launcher_os .. "autostart.lua")
 source(launcher_os .. "env.lua")
-{{ if lookPath "nvidia-smi" -}}
-hl.env("WLR_DRM_NO_ATOMIC", "1")
-{{- end }}
 source(launcher_os .. "bindings.lua")
 
 source(launcher_os .. "bindings/wm.lua")
