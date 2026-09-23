@@ -24,5 +24,9 @@ fpath=(~/.cache/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-mfaerevaag-S
 for f in ~/.zsh/*.zsh; do source $f; done
 
 DISABLE_AUTO_TITLE="true"
+{{ if lookPath "vivaldi-stable" -}}
 export BROWSER=vivaldi-stable
+{{- else -}}
+export BROWSER=vivaldi
+{{- end }}
 
