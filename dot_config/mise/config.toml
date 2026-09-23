@@ -3,6 +3,9 @@ node = "24.19.0"
 ruby = "3.4.6"
 
 [settings]
+# Use precompiled binaries (NixOS runs them via nix-ld) instead of building
+# from source, which mise defaults to on NixOS.
+all_compile = false
 
 [settings.node]
 corepack = true

@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "nixos") }}
+# NixOS: go install needs a C toolchain that isn't on PATH; use nixpkgs
+source "{{ .chezmoi.sourceDir }}/dot_local/lib/chezmoi/utils.sh"
+install_packages sesh
+{{- else }}
+
+go install github.com/joshmedeski/sesh/v2@latest
+{{- end }}
