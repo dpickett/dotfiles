@@ -1,0 +1,41 @@
+#!/usr/bin/env zsh
+
+# keyd reads from /etc, outside chezmoi's $HOME target, so the config is copied
+# there. The service is not started here -- that's a deliberate step to take
+# with a second keyboard reachable.
+#
+# keyd config hash: {{ include "dot_config/keyd/default.conf" | sha256sum }}
+
+set -e
+
+if [[ -f ~/.local/lib/chezmoi/utils.sh ]]; then
+    source ~/.local/lib/chezmoi/utils.sh
+else
+    echo "Error: ~/.local/lib/chezmoi/utils.sh not found; cannot install packages"
+    exit 1
+fi
+
+install_packages keyd
+
+sudo install -Dm644 ~/.config/keyd/default.conf /etc/keyd/default.conf
+
+if systemctl is-active --quiet keyd; then
+    sudo keyd reload
+    echo "keyd config reloaded."
+else
+    cat <<'EOF'
+
+keyd installed, /etc/keyd/default.conf in place, service not started.
+Start it with the laptop's built-in keyboard within reach:
+
+    sudo systemctl start keyd
+
+Verify: right Alt then B focuses Vivaldi; SUPER + drag moves a window;
+SUPER + ALT + B still works; Caps is still Ctrl; volume keys work; typing
+is normal.
+
+    sudo systemctl stop keyd      # back out
+    sudo systemctl enable keyd    # persist once happy
+
+EOF
+fi
