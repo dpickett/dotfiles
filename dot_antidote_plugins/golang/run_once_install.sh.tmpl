@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "nixos") }}
+# NixOS: use go from nixpkgs rather than unpacking into /usr/local
+source "{{ .chezmoi.sourceDir }}/dot_local/lib/chezmoi/utils.sh"
+install_packages go
+{{- else }}
+
 # Set the desired Go version
 GO_VERSION="1.24.1"
 
@@ -26,3 +32,4 @@ go version
 
 # Clean up
 [[ -f /tmp/go.tar.gz ]] && rm /tmp/go.tar.gz
+{{- end }}

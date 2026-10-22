@@ -16,6 +16,15 @@ if ! command -v herdr >/dev/null 2>&1; then
     exit 0
 fi
 
+# herdr-annotate needs bun. mise owns it (see ~/.config/mise/config.toml), but
+# this script runs before mise is activated, so pull bun onto PATH directly.
+if ! command -v bun >/dev/null 2>&1 && [[ -x "$HOME/bin/mise" ]]; then
+    "$HOME/bin/mise" install bun || true
+    if bun_prefix=$("$HOME/bin/mise" where bun 2>/dev/null); then
+        export PATH="$bun_prefix/bin:$PATH"
+    fi
+fi
+
 if ! command -v bun >/dev/null 2>&1; then
     echo "herdr-annotate needs bun; install it, then: herdr plugin install plannotator/herdr-annotate -y" >&2
     exit 0
