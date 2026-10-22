@@ -54,4 +54,6 @@ hl.config({
 })
 
 hl.window_rule({ match = { class = "Waydroid" }, float = true })
-hl.window_rule({ match = { class = "^(com.mitchellh.ghostty)$" }, opacity = "0.8 0.8" })
+-- The .* also covers com.mitchellh.ghostty-herdr, the class herdr-focus stamps
+-- its window with so it can be told apart from a scratch terminal.
+hl.window_rule({ match = { class = "^(com.mitchellh.ghostty.*)$" }, opacity = "0.8 0.8" })

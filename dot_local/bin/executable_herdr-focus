@@ -1,0 +1,37 @@
+#!/usr/bin/env zsh
+# Focus the herdr terminal; cycle when already in one; launch when there is none.
+#
+# Every ghostty window shares one process under --gtk-single-instance, and
+# ghostty's shell integration retitles each window from whatever pane is active,
+# so a herdr window cannot be told apart after the fact. It is stamped at launch
+# instead: --class gives it a Wayland app id of its own, which this script and
+# the opacity window rule in hyprland.lua both match on.
+
+# Hyprland's exec environment is the bare system PATH, with no ~/.local/bin, so
+# herdr would not resolve for the launch below. uwsm passes this environment on
+# to the window it opens, which is also what lets ghostty find herdr.
+export PATH="$HOME/.local/bin:$PATH"
+
+CLASS='com.mitchellh.ghostty-herdr'
+
+clients=$(hyprctl clients -j)
+# Stable cycle order: workspace, then position on screen.
+addrs=(${(f)"$(jq -r --arg c "$CLASS" '[.[] | select(.class == $c)]
+  | sort_by(.workspace.id, .at[0], .at[1]) | .[].address' <<<"$clients")"})
+
+if (( ${#addrs} == 0 )); then
+  exec uwsm app -- ghostty --class="$CLASS" -e herdr
+fi
+
+active=$(hyprctl activewindow -j | jq -r '.address')
+i=${addrs[(ie)$active]}  # ${#addrs}+1 when the active window is not a herdr one
+
+if (( i <= ${#addrs} )); then
+  target=${addrs[i % ${#addrs} + 1]}         # advance, wrapping
+else
+  target=$(jq -r --arg c "$CLASS" '[.[] | select(.class == $c)]
+    | min_by(.focusHistoryID) | .address' <<<"$clients")  # most recently used
+fi
+
+# This Hyprland build takes lua dispatchers; "dispatch focuswindow …" is an error.
+hyprctl dispatch "hl.dsp.focus({ window = \"address:$target\" })"
